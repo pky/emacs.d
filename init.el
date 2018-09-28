@@ -225,6 +225,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+
  '(comment-style (quote extra-line))
  '(custom-enabled-themes (quote (manoj-dark)))
  '(dash-at-point-legacy-mode t)
@@ -233,6 +234,7 @@
  '(helm-mini-default-sources
    (quote
     (helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf)))
+;;      (helm-source-buffers-list helm-source-files-in-current-dir helm-source-recentf)))
  '(helm-truncate-lines t t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
@@ -240,7 +242,7 @@
  '(js-doc-url "your url")
  '(package-selected-packages
    (quote
-    (0xc swift3-mode wgrep-helm 0blayout wgrep-pt yaml-mode wgrep-ag web-mode w3m volatile-highlights twittering-mode tabbar-ruler swift-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-swoop helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-ls-git helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime elscreen-persist descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible android-mode ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm)))
+    (package-utils 0xc swift3-mode wgrep-helm 0blayout wgrep-pt yaml-mode wgrep-ag web-mode w3m volatile-highlights twittering-mode tabbar-ruler swift-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-swoop helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-ls-git helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime elscreen-persist descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible android-mode ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm)))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -715,136 +717,132 @@
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
-;; ;; helm
-;; (require 'helm-config)
-;; (helm-mode 1)
-;; (require 'helm-ag)
-;; ;;(require 'helm-descbinds)
-;; ;;(require 'helm-migemo)
-;; (require 'helm-swoop)
-;; (require 'helm-dash)
-;; (require 'helm-ls-git)
-;; (require 'helm-ls-svn)
-;; (require 'helm-flymake)
-;; (projectile-global-mode)
-;; (setq projectile-completion-system 'helm)
-;; (helm-projectile-on)
-;; (autoload 'dash-at-point "dash-at-point"
-;;           "Search the word at point with Dash." t nil)
-;; ;;(helm-descbinds-mode)
-;; (with-eval-after-load "helm-regexp.el"
-;;   (setq helm-source-occur (helm-make-source "Occur" 'helm-source-multi-occur))
-;;   (setq helm-source-occur (helm-make-source "Moccur" 'helm-source-multi-occur)))
+;; helm
+(require 'helm-config)
+(require 'helm-descbinds)
+(require 'helm-ag)
+(require 'helm-swoop)
+(require 'helm-ls-git)
 
-;; ;;
-;; ;; helm-migemo, helm-swoop連携
-;; ;;
-;; ;;; この修正が必要
-;; (eval-after-load "helm-migemo"
-;;   '(defun helm-compile-source--candidates-in-buffer (source)
-;;      (helm-aif (assoc 'candidates-in-buffer source)
-;;          (append source
-;;                  `((candidates
-;;                     . ,(or (cdr it)
-;;                            (lambda ()
-;;                              ;; Do not use `source' because other plugins
-;;                              ;; (such as helm-migemo) may change it
-;;                              (helm-candidates-in-buffer (helm-get-current-source)))))
-;;                    (volatile) (match identity)))
-;;        source)))
-;; ;;; isearchからの連携を考えるとC-r/C-sにも割り当て推奨
-;; (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-;; (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+(helm-mode 1)
+(helm-migemo-mode 1)
 
-;; ;;; 検索結果をcycleしない、お好みで
-;; (setq helm-swoop-move-to-line-cycle nil)
+(global-set-key (kbd "C-x C-d") ''helm-ls-git-ls)
 
-;; (cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
-;;   "シンボル検索用Migemo無効版helm-swoop"
-;;   (interactive)
-;;   (let ((helm-swoop-pre-input-function
-;;          (lambda () (format "\\_<%s\\_> " (thing-at-point 'symbol)))))
-;;     (helm-swoop :$source (delete '(migemo) (copy-sequence (helm-c-source-swoop)))
-;;                 :$query $query :$multiline $multiline)))
-;; ;;; C-M-:に割り当て
-;; (global-set-key (kbd "C-M-:") 'helm-swoop-nomigemo)
 
-;; ;;; [2014-11-25 Tue]
-;; (when (featurep 'helm-anything)
-;;   (defadvice helm-resume (around helm-swoop-resume activate)
-;;     "helm-anything-resumeで復元できないのでその場合に限定して無効化"
-;;     ad-do-it))
+  (with-eval-after-load "helm-regexp.el"
+    (setq helm-source-occur (helm-make-source "Occur" 'helm-source-multi-occur))
+    (setq helm-source-occur (helm-make-source "Moccur" 'helm-source-multi-occur)))
+
+
+;; Change the keybinds to whatever you like :)
+(global-set-key (kbd "M-i") 'helm-swoop)
+(global-set-key (kbd "M-I") 'helm-swoop-back-to-last-point)
+(global-set-key (kbd "C-c M-i") 'helm-multi-swoop)
+(global-set-key (kbd "C-x M-i") 'helm-multi-swoop-all)
+
+;; When doing isearch, hand the word over to helm-swoop
+(define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+;; From helm-swoop to helm-multi-swoop-all
+(define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+;; When doing evil-search, hand the word over to helm-swoop
+;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
+
+;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
+(define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
+
+;; Move up and down like isearch
+;;(define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+;;(define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+;;(define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+;;(define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
+
+;; Save buffer when helm-multi-swoop-edit complete
+(setq helm-multi-swoop-edit-save t)
+
+;; If this value is t, split window inside the current window
+(setq helm-swoop-split-with-multiple-windows nil)
+
+;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+(setq helm-swoop-split-direction 'split-window-vertically)
+
+;; If nil, you can slightly boost invoke speed in exchange for text color
+(setq helm-swoop-speed-or-color nil)
+
+;; ;; Go to the opposite side of line from the end or beginning of line
+(setq helm-swoop-move-to-line-cycle t)
+
+;; Optional face for line numbers
+;; Face name is `helm-swoop-line-number-face`
+(setq helm-swoop-use-line-number-face t)
+
+;; If you prefer fuzzy matching
+(setq helm-swoop-use-fuzzy-match t)
+
+
+;; 画面更新するまでのタイムラグを設定する（デフォルトは 0.01）
+(setq helm-input-idle-delay 0.2)
+
+;; 表示する最大候補数を指定する（デフォルトで 100）
+;; (setq helm-candidate-number-limit 500)
+
+;; locateコマンドのパラメータを指定する
+;; デフォルト値に設定してある -e オプションは性能がでないので削除している
+(setq helm-locate-command "locate %s -A --regex %s")
 
 ;; ;;; ace-isearch
-;; (global-ace-isearch-mode 1)
+ (global-ace-isearch-mode 1)
 
 ;; ;;; [2015-03-23 Mon]C-u C-s / C-u C-u C-s
-;; (defun isearch-forward-or-helm-swoop (use-helm-swoop)
-;;   (interactive "p")
-;;   (let (current-prefix-arg
-;;         (helm-swoop-pre-input-function 'ignore))
-;;     (call-interactively
-;;      (case use-helm-swoop
-;;        (1 'isearch-forward)
-;;        (4 'helm-swoop)
-;;        (16 'helm-swoop-nomigemo)))))
-;; (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop)
-
-;; (require 'ido-occasional)
-;; (require 'ido-vertical-mode)
-;; (require 'imenus)
-;; (setq ido-enable-flex-matching t)
-;; (ido-vertical-mode 1)
-;; (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-
-;; ;;; エラー対策
-;; (defun imenu-find-default--or-current-symbol (&rest them)
-;;   (condition-case nil
-;;       (apply them)
-;;     (error (thing-at-point 'symbol))))
-;; (advice-add 'imenu-find-default :around 'imenu-find-default--or-current-symbol)
-;; ;;; なぜか現在のシンボルを取ってくれないから
-;; (defun imenus-exit-minibuffer ()
-;;   (exit-minibuffer))
+ (defun isearch-forward-or-helm-swoop (use-helm-swoop)
+   (interactive "p")
+   (let (current-prefix-arg
+         (helm-swoop-pre-input-function 'ignore))
+     (call-interactively
+      (case use-helm-swoop
+        (1 'isearch-forward)
+        (4 'helm-swoop)
+        (16 'helm-swoop-nomigemo)))))
+ (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop)
 
 ;; ;;; ido化: imenus/with-ido imenus-mode-buffers/with-idoを定義
-;; (with-ido-completion imenus)
+ (with-ido-completion imenus)
 ;; ;; C-M-s C-M-sで現在のシンボルをhelm-multi-swoopできるよ！
-;; (global-set-key (kbd "C-M-s") (with-ido-completion imenus-mode-buffers))
+ (global-set-key (kbd "C-M-s") (with-ido-completion imenus-mode-buffers))
 
 ;; ;;; M-oでのmulti-occurをシンボル正規表現にするよう改良
-;; (push '(occur . imenus-ido-multi-occur) imenus-actions)
-;; (defun imenus-ido-multi-occur (buffers input)
-;;   (multi-occur buffers
-;;                (format "\\_<%s\\_>"
-;;                        (regexp-quote (replace-regexp-in-string "^.*|" "" input)))))
+;;  (push '(occur . imenus-ido-multi-occur) imenus-actions)
+;;  (defun imenus-ido-multi-occur (buffers input)
+;;    (multi-occur buffers
+;;                 (format "\\_<%s\\_>"
+;;                         (regexp-quote (replace-regexp-in-string "^.*|" "" input)))))
 
-;; ;;; C-M-sで関数呼び出しをhelm-multi-swoopできるようにした
-;; (push '(helm-multi-swoop . imenus-helm-multi-swoop) imenus-actions)
-;; (defun imenus-helm-multi-swoop (buffers input)
-;;   (helm-multi-swoop (replace-regexp-in-string "^.*|" "" input)
-;;                     (mapcar 'buffer-name buffers)))
-;; (define-key imenus-minibuffer-map (kbd "C-M-s") 'imenus-exit-to-helm-multi-swoop)
-;; (defun imenus-exit-to-helm-multi-swoop ()
-;;   "Exit from imenu prompt; start `helm-multi-swoop' with the current input."
-;;   (interactive)
-;;   (setq imenus-exit-status 'helm-multi-swoop)
-;;   (imenus-exit-minibuffer))
+;; ;; ;;; C-M-sで関数呼び出しをhelm-multi-swoopできるようにした
+;;   (push '(helm-multi-swoop . imenus-helm-multi-swoop) imenus-actions)
+;;   (defun imenus-helm-multi-swoop (buffers input)
+;;     (helm-multi-swoop (replace-regexp-in-string "^.*|" "" input)
+;;                       (mapcar 'buffer-name buffers)))
+;;   (define-key imenus-minibuffer-map (kbd "C-M-s") 'imenus-exit-to-helm-multi-swoop)
+;;   (defun imenus-exit-to-helm-multi-swoop ()
+;; ;; ;;   "Exit from imenu prompt; start `helm-multi-swoop' with the current input."
+;;     (interactive)
+;;     (setq imenus-exit-status 'helm-multi-swoop)
+;;     (imenus-exit-minibuffer))
 
 
-;; (global-set-key (kbd "C-;") 'helm-mini)
-;; ;;(global-set-key (kbd "C-c b") 'helm-descbinds)
-;; ;;(global-set-key (kbd "C-c o") 'helm-occur)
-;; (global-set-key (kbd "C-c g") 'helm-ag)
-;; (define-key global-map (kbd "M-y") 'helm-show-kill-ring)
-;; (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
-;; (global-set-key (kbd "C-c s") 'helm-git-files)
-;; (global-set-key (kbd "C-c p") 'helm-swoop)
-;; (global-set-key (kbd "C-c f") 'helm-flymake)
-;; (global-set-key (kbd "C-c d") 'dash-at-point)
-;; (global-set-key (kbd "C-c C-d") 'helm-browse-project)
+ (global-set-key (kbd "C-;") 'helm-mini)
+(global-set-key (kbd "C-c b") 'helm-descbinds)
+(global-set-key (kbd "C-c o") 'helm-occur)
+ (global-set-key (kbd "C-c g") 'helm-ag)
+ (define-key global-map (kbd "M-y") 'helm-show-kill-ring)
+ (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
+ (global-set-key (kbd "C-c s") 'helm-git-files)
+ (global-set-key (kbd "C-c p") 'helm-swoop)
+ (global-set-key (kbd "C-c f") 'helm-flymake)
+ (global-set-key (kbd "C-c d") 'dash-at-point)
+ (global-set-key (kbd "C-c C-d") 'helm-browse-project)
 
-;; (define-key helm-map (kbd "C-h") 'delete-backward-char)
+ (define-key helm-map (kbd "C-h") 'delete-backward-char)
 ;; (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
 ;; (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 ;; (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
@@ -853,12 +851,12 @@
 
 ;; ;; helm-ag
 ;; ;;; 現在のシンボルをデフォルトのクエリにする
-;; (setq helm-ag-insert-at-point 'symbol)
+ (setq helm-ag-insert-at-point 'symbol)
 
 ;; ;;; C-M-gはちょうどあいてる
-;; ;;(global-set-key (kbd "C-M-g") 'helm-ag)
-;; (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
-;; (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
+ (global-set-key (kbd "C-M-g") 'helm-ag)
+ (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
+ (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
 
 ;; (require 'expand-region)
 ;; (require 'multiple-cursors)
