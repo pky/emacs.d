@@ -251,74 +251,8 @@
 (add-to-list 'auto-mode-alist '("access\\.conf\\'" . apache-mode))
 (add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
 
-;; auto complete
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-(add-to-list 'ac-modes 'text-mode)
-(add-to-list 'ac-modes 'fundamental-mode)
-(add-to-list 'ac-modes 'org-mode)
-(add-to-list 'ac-modes 'yatex-mode)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-*/dict/")
-(setq ac-use-menu-map t) ;; C-n, C-p
-(setq ac-delay 0.1)
-(setq ac-auto-show-menu 0.2)
-(setq ac-use-fuzzy t)
-(ac-set-trigger-key "Enter")
-
-(add-hook 'emacs-startup-hook
-          (function (lambda ()
-                      (require 'auto-complete)
-                      ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-auto-complete-20150618.1949/dict")
-                      (add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-auto-complete-*/dict")
-                      (require 'auto-complete-config)
-                      (when (boundp 'ac-modes)
-                        (setq ac-modes
-                              (append ac-modes
-                                      (list
-                                       'scala-mode
-                                       'js-mode
-                                       'js2-mode
-                                       'scss-mode
-                                       'coffee-mode
-                                       'ruby-mode
-                                       'php-mode
-                                       'css-mode
-                                       'sh-mode
-                                       'ts-mode
-                                       'c-mode
-                                       'c++-mode
-                                       'python-mode))))
-                      (ac-config-default)
-                      (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-                      (global-auto-complete-mode t)
-                      )))
-
-(add-hook 'after-init-hook 'global-company-mode)
-
 ;; Magit
 (require 'magit)
-
-; SCSS
-
-(autoload 'scss-mode "scss-mode")
-(setq scss-compile-at-save nil)
-(add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode)
-(setq tab-width 2))
-
-;; coffee script
-(autoload 'coffee-mode "coffee-mode")
-(setq coffee-compile-at-save nil)
-(add-to-list 'auto-mode-alist '("\\.coffee\\'" . coffee-mode))
-(defun coffee-custom ()
-  "coffee-mode-hook"
-  (and (set (make-local-variable 'tab-width) 2)
-       (set (make-local-variable 'coffee-tab-width) 2))
-)
-
-(add-hook 'coffee-mode-hook
-  '(lambda() (coffee-custom)))
-
 
 ;; color-moccur
 (when (require 'color-moccur nil t)
@@ -397,13 +331,6 @@
         try-complete-lisp-symbol))
 
 (add-to-list 'default-frame-alist '(font . "fontset-default"))
-;; (set-frame-font "fontset-default")
-
-;; ssh-agent
-;; http://glozer.net/code.html#ssh-agent
-;;(setq load-path(cons "~/site-lisp/ssh-agent" load-path))
-;;(load-library "ssh-agent")
-
 ;;tramp
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
@@ -788,163 +715,163 @@
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
-;; helm
-(require 'helm-config)
-(helm-mode 1)
-(require 'helm-ag)
-;;(require 'helm-descbinds)
-;;(require 'helm-migemo)
-(require 'helm-swoop)
-(require 'helm-dash)
-(require 'helm-ls-git)
-(require 'helm-ls-svn)
-(require 'helm-flymake)
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
-(autoload 'dash-at-point "dash-at-point"
-          "Search the word at point with Dash." t nil)
-;;(helm-descbinds-mode)
-(with-eval-after-load "helm-regexp.el"
-  (setq helm-source-occur (helm-make-source "Occur" 'helm-source-multi-occur))
-  (setq helm-source-occur (helm-make-source "Moccur" 'helm-source-multi-occur)))
+;; ;; helm
+;; (require 'helm-config)
+;; (helm-mode 1)
+;; (require 'helm-ag)
+;; ;;(require 'helm-descbinds)
+;; ;;(require 'helm-migemo)
+;; (require 'helm-swoop)
+;; (require 'helm-dash)
+;; (require 'helm-ls-git)
+;; (require 'helm-ls-svn)
+;; (require 'helm-flymake)
+;; (projectile-global-mode)
+;; (setq projectile-completion-system 'helm)
+;; (helm-projectile-on)
+;; (autoload 'dash-at-point "dash-at-point"
+;;           "Search the word at point with Dash." t nil)
+;; ;;(helm-descbinds-mode)
+;; (with-eval-after-load "helm-regexp.el"
+;;   (setq helm-source-occur (helm-make-source "Occur" 'helm-source-multi-occur))
+;;   (setq helm-source-occur (helm-make-source "Moccur" 'helm-source-multi-occur)))
 
-;;
-;; helm-migemo, helm-swoop連携
-;;
-;;; この修正が必要
-(eval-after-load "helm-migemo"
-  '(defun helm-compile-source--candidates-in-buffer (source)
-     (helm-aif (assoc 'candidates-in-buffer source)
-         (append source
-                 `((candidates
-                    . ,(or (cdr it)
-                           (lambda ()
-                             ;; Do not use `source' because other plugins
-                             ;; (such as helm-migemo) may change it
-                             (helm-candidates-in-buffer (helm-get-current-source)))))
-                   (volatile) (match identity)))
-       source)))
-;;; isearchからの連携を考えるとC-r/C-sにも割り当て推奨
-(define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-(define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+;; ;;
+;; ;; helm-migemo, helm-swoop連携
+;; ;;
+;; ;;; この修正が必要
+;; (eval-after-load "helm-migemo"
+;;   '(defun helm-compile-source--candidates-in-buffer (source)
+;;      (helm-aif (assoc 'candidates-in-buffer source)
+;;          (append source
+;;                  `((candidates
+;;                     . ,(or (cdr it)
+;;                            (lambda ()
+;;                              ;; Do not use `source' because other plugins
+;;                              ;; (such as helm-migemo) may change it
+;;                              (helm-candidates-in-buffer (helm-get-current-source)))))
+;;                    (volatile) (match identity)))
+;;        source)))
+;; ;;; isearchからの連携を考えるとC-r/C-sにも割り当て推奨
+;; (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+;; (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
 
-;;; 検索結果をcycleしない、お好みで
-(setq helm-swoop-move-to-line-cycle nil)
+;; ;;; 検索結果をcycleしない、お好みで
+;; (setq helm-swoop-move-to-line-cycle nil)
 
-(cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
-  "シンボル検索用Migemo無効版helm-swoop"
-  (interactive)
-  (let ((helm-swoop-pre-input-function
-         (lambda () (format "\\_<%s\\_> " (thing-at-point 'symbol)))))
-    (helm-swoop :$source (delete '(migemo) (copy-sequence (helm-c-source-swoop)))
-                :$query $query :$multiline $multiline)))
-;;; C-M-:に割り当て
-(global-set-key (kbd "C-M-:") 'helm-swoop-nomigemo)
+;; (cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
+;;   "シンボル検索用Migemo無効版helm-swoop"
+;;   (interactive)
+;;   (let ((helm-swoop-pre-input-function
+;;          (lambda () (format "\\_<%s\\_> " (thing-at-point 'symbol)))))
+;;     (helm-swoop :$source (delete '(migemo) (copy-sequence (helm-c-source-swoop)))
+;;                 :$query $query :$multiline $multiline)))
+;; ;;; C-M-:に割り当て
+;; (global-set-key (kbd "C-M-:") 'helm-swoop-nomigemo)
 
-;;; [2014-11-25 Tue]
-(when (featurep 'helm-anything)
-  (defadvice helm-resume (around helm-swoop-resume activate)
-    "helm-anything-resumeで復元できないのでその場合に限定して無効化"
-    ad-do-it))
+;; ;;; [2014-11-25 Tue]
+;; (when (featurep 'helm-anything)
+;;   (defadvice helm-resume (around helm-swoop-resume activate)
+;;     "helm-anything-resumeで復元できないのでその場合に限定して無効化"
+;;     ad-do-it))
 
-;;; ace-isearch
-(global-ace-isearch-mode 1)
+;; ;;; ace-isearch
+;; (global-ace-isearch-mode 1)
 
-;;; [2015-03-23 Mon]C-u C-s / C-u C-u C-s
-(defun isearch-forward-or-helm-swoop (use-helm-swoop)
-  (interactive "p")
-  (let (current-prefix-arg
-        (helm-swoop-pre-input-function 'ignore))
-    (call-interactively
-     (case use-helm-swoop
-       (1 'isearch-forward)
-       (4 'helm-swoop)
-       (16 'helm-swoop-nomigemo)))))
-(global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop)
+;; ;;; [2015-03-23 Mon]C-u C-s / C-u C-u C-s
+;; (defun isearch-forward-or-helm-swoop (use-helm-swoop)
+;;   (interactive "p")
+;;   (let (current-prefix-arg
+;;         (helm-swoop-pre-input-function 'ignore))
+;;     (call-interactively
+;;      (case use-helm-swoop
+;;        (1 'isearch-forward)
+;;        (4 'helm-swoop)
+;;        (16 'helm-swoop-nomigemo)))))
+;; (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop)
 
-(require 'ido-occasional)
-(require 'ido-vertical-mode)
-(require 'imenus)
-(setq ido-enable-flex-matching t)
-(ido-vertical-mode 1)
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+;; (require 'ido-occasional)
+;; (require 'ido-vertical-mode)
+;; (require 'imenus)
+;; (setq ido-enable-flex-matching t)
+;; (ido-vertical-mode 1)
+;; (setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
-;;; エラー対策
-(defun imenu-find-default--or-current-symbol (&rest them)
-  (condition-case nil
-      (apply them)
-    (error (thing-at-point 'symbol))))
-(advice-add 'imenu-find-default :around 'imenu-find-default--or-current-symbol)
-;;; なぜか現在のシンボルを取ってくれないから
-(defun imenus-exit-minibuffer ()
-  (exit-minibuffer))
+;; ;;; エラー対策
+;; (defun imenu-find-default--or-current-symbol (&rest them)
+;;   (condition-case nil
+;;       (apply them)
+;;     (error (thing-at-point 'symbol))))
+;; (advice-add 'imenu-find-default :around 'imenu-find-default--or-current-symbol)
+;; ;;; なぜか現在のシンボルを取ってくれないから
+;; (defun imenus-exit-minibuffer ()
+;;   (exit-minibuffer))
 
-;;; ido化: imenus/with-ido imenus-mode-buffers/with-idoを定義
-(with-ido-completion imenus)
-;; C-M-s C-M-sで現在のシンボルをhelm-multi-swoopできるよ！
-(global-set-key (kbd "C-M-s") (with-ido-completion imenus-mode-buffers))
+;; ;;; ido化: imenus/with-ido imenus-mode-buffers/with-idoを定義
+;; (with-ido-completion imenus)
+;; ;; C-M-s C-M-sで現在のシンボルをhelm-multi-swoopできるよ！
+;; (global-set-key (kbd "C-M-s") (with-ido-completion imenus-mode-buffers))
 
-;;; M-oでのmulti-occurをシンボル正規表現にするよう改良
-(push '(occur . imenus-ido-multi-occur) imenus-actions)
-(defun imenus-ido-multi-occur (buffers input)
-  (multi-occur buffers
-               (format "\\_<%s\\_>"
-                       (regexp-quote (replace-regexp-in-string "^.*|" "" input)))))
+;; ;;; M-oでのmulti-occurをシンボル正規表現にするよう改良
+;; (push '(occur . imenus-ido-multi-occur) imenus-actions)
+;; (defun imenus-ido-multi-occur (buffers input)
+;;   (multi-occur buffers
+;;                (format "\\_<%s\\_>"
+;;                        (regexp-quote (replace-regexp-in-string "^.*|" "" input)))))
 
-;;; C-M-sで関数呼び出しをhelm-multi-swoopできるようにした
-(push '(helm-multi-swoop . imenus-helm-multi-swoop) imenus-actions)
-(defun imenus-helm-multi-swoop (buffers input)
-  (helm-multi-swoop (replace-regexp-in-string "^.*|" "" input)
-                    (mapcar 'buffer-name buffers)))
-(define-key imenus-minibuffer-map (kbd "C-M-s") 'imenus-exit-to-helm-multi-swoop)
-(defun imenus-exit-to-helm-multi-swoop ()
-  "Exit from imenu prompt; start `helm-multi-swoop' with the current input."
-  (interactive)
-  (setq imenus-exit-status 'helm-multi-swoop)
-  (imenus-exit-minibuffer))
-
-
-(global-set-key (kbd "C-;") 'helm-mini)
-;;(global-set-key (kbd "C-c b") 'helm-descbinds)
-;;(global-set-key (kbd "C-c o") 'helm-occur)
-(global-set-key (kbd "C-c g") 'helm-ag)
-(define-key global-map (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-c y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-c s") 'helm-git-files)
-(global-set-key (kbd "C-c p") 'helm-swoop)
-(global-set-key (kbd "C-c f") 'helm-flymake)
-(global-set-key (kbd "C-c d") 'dash-at-point)
-(global-set-key (kbd "C-c C-d") 'helm-browse-project)
-
-(define-key helm-map (kbd "C-h") 'delete-backward-char)
-(define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
-(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-(define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
+;; ;;; C-M-sで関数呼び出しをhelm-multi-swoopできるようにした
+;; (push '(helm-multi-swoop . imenus-helm-multi-swoop) imenus-actions)
+;; (defun imenus-helm-multi-swoop (buffers input)
+;;   (helm-multi-swoop (replace-regexp-in-string "^.*|" "" input)
+;;                     (mapcar 'buffer-name buffers)))
+;; (define-key imenus-minibuffer-map (kbd "C-M-s") 'imenus-exit-to-helm-multi-swoop)
+;; (defun imenus-exit-to-helm-multi-swoop ()
+;;   "Exit from imenu prompt; start `helm-multi-swoop' with the current input."
+;;   (interactive)
+;;   (setq imenus-exit-status 'helm-multi-swoop)
+;;   (imenus-exit-minibuffer))
 
 
+;; (global-set-key (kbd "C-;") 'helm-mini)
+;; ;;(global-set-key (kbd "C-c b") 'helm-descbinds)
+;; ;;(global-set-key (kbd "C-c o") 'helm-occur)
+;; (global-set-key (kbd "C-c g") 'helm-ag)
+;; (define-key global-map (kbd "M-y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "C-c s") 'helm-git-files)
+;; (global-set-key (kbd "C-c p") 'helm-swoop)
+;; (global-set-key (kbd "C-c f") 'helm-flymake)
+;; (global-set-key (kbd "C-c d") 'dash-at-point)
+;; (global-set-key (kbd "C-c C-d") 'helm-browse-project)
 
-;; helm-ag
-;;; 現在のシンボルをデフォルトのクエリにする
-(setq helm-ag-insert-at-point 'symbol)
+;; (define-key helm-map (kbd "C-h") 'delete-backward-char)
+;; (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
+;; (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
+;; (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
 
-;;; C-M-gはちょうどあいてる
-;;(global-set-key (kbd "C-M-g") 'helm-ag)
-(global-set-key (kbd "C-M-g") 'helm-projectile-ag)
-(global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
 
-(require 'expand-region)
-(require 'multiple-cursors)
-(require 'smartrep)
 
-(global-set-key (kbd "C-,") 'er/expand-region)
-(global-set-key (kbd "C-M-,") 'er/contract-region)
+;; ;; helm-ag
+;; ;;; 現在のシンボルをデフォルトのクエリにする
+;; (setq helm-ag-insert-at-point 'symbol)
 
-(global-set-key (kbd "<C-M-return>") 'mc/edit-lines)
-(smartrep-define-key
- global-map "C-." '(("C-n" . 'mc/mark-next-like-this)
-                    ("C-p" . 'mc/mark-previous-like-this)
-                    ("*"   . 'mc/mark-all-like-this)))
+;; ;;; C-M-gはちょうどあいてる
+;; ;;(global-set-key (kbd "C-M-g") 'helm-ag)
+;; (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
+;; (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
+
+;; (require 'expand-region)
+;; (require 'multiple-cursors)
+;; (require 'smartrep)
+
+;; (global-set-key (kbd "C-,") 'er/expand-region)
+;; (global-set-key (kbd "C-M-,") 'er/contract-region)
+
+;; (global-set-key (kbd "<C-M-return>") 'mc/edit-lines)
+;; (smartrep-define-key
+;;  global-map "C-." '(("C-n" . 'mc/mark-next-like-this)
+;;                     ("C-p" . 'mc/mark-previous-like-this)
+;;                     ("*"   . 'mc/mark-all-like-this)))
 
 (global-git-gutter+-mode)
 (require 'git-gutter-fringe+)
