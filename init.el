@@ -24,7 +24,6 @@
                       (auto-list 'load-path "~/.emacs.d/auto-install")
                       )))
 
-
 ;; old site-lisp
  (setq load-path
        (append
@@ -239,7 +238,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(elscreen go package-utils 0xc swift3-mode wgrep-helm 0blayout wgrep-pt yaml-mode wgrep-ag web-mode w3m volatile-highlights twittering-mode swift-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-swoop helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-ls-git helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible android-mode ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -649,10 +648,7 @@
 
 (require 'elscreen)
 (elscreen-start)
-;;(global-set-key (kbd "C-<tab>")   'elscreen-next)
-;;(global-set-key (kbd "C-S-<tab>") 'elscreen-previous)
 (setq elscreen-prefix-key (kbd "C-z"))
-;;(elscreen-persist-mode 1)
 ;;; タブの先頭に[X]を表示しない
 
 (setq elscreen-tab-display-kill-screen nil)
@@ -985,38 +981,35 @@
 ;;(require 'w3m)
 (require 'markdown-mode)
 
-;; (defun w3m-browse-url-other-window (url &optional newwin)
-;;   (let ((w3m-pop-up-windows t))
-;;     (if (one-window-p) (split-window))
-;;     (other-window 1)
-;;     (w3m-browse-url url newwin)))
+;; counsel
+(ivy-mode 1) ;; デフォルトの入力補完がivyになる
+(counsel-mode 1)
+;; M-x, C-x C-fなどのEmacsの基本的な組み込みコマンドをivy版にリマップする
 
-;; (defun markdown-render-w3m (n)
-;;   (interactive "p")
-;;   (message (buffer-file-name))
-;;   (call-process "/usr/local/bin/grip" nil nil nil
-;;                 "--gfm" "--export"
-;;                 (buffer-file-name)
-;;                 "/tmp/grip.html")
-;;   (w3m-browse-url-other-window "file://tmp/grip.html")
-;;   )
-;; (define-key markdown-mode-map "\C-c \C-c" 'markdown-render-w3m)
+;;; 下記は任意で有効化
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 
-;; rember the milk
-;;(require 'simple-rtm)
-;;(autoload 'simple-rtm-mode "simple-rtm" "Interactive mode for Remember The Milk" t)
-;;(eval-bafter-load 'simple-rtm
-;;  '(progn
-;;     (display-simple-rtm-tasks-mode t)))
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(setq ivy-height 30) ;; minibufferのサイズを拡大！（重要）
+(setq ivy-extra-directories nil)
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-plus)))
 
-;; customize-theme
+;; counsel設定
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file) ;; find-fileもcounsel任せ！
+(defvar counsel-find-file-ignore-regexp (regexp-opt '("./" "../")))
 
-;;flycheck
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-;; (flycheck-add-next-checker 'javascript-jshint
-;;                         'javascript-gjslint)
 
-;;(define-key input-decode-map "\e[1;2A" [S-up])
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
