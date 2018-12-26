@@ -94,7 +94,8 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
+(when (version< emacs-version "27.0") (package-initialize))
+;;(package-initialize)
 
 ;; git egg
 ;;(require 'egg)
@@ -225,24 +226,20 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
- '(comment-style (quote extra-line))
- '(custom-enabled-themes (quote (manoj-dark)))
+ '(comment-style 'extra-line)
+ '(custom-enabled-themes '(manoj-dark))
  '(dash-at-point-legacy-mode t)
  '(helm-delete-minibuffer-contents-from-point t)
- '(helm-ls-git-show-abs-or-relative (quote relative))
+ '(helm-ls-git-show-abs-or-relative 'relative)
  '(helm-mini-default-sources
-   (quote
-    (helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf)))
-;;      (helm-source-buffers-list helm-source-files-in-current-dir helm-source-recentf)))
+   '(helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf))
  '(helm-truncate-lines t t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   (quote
-    (package-utils 0xc swift3-mode wgrep-helm 0blayout wgrep-pt yaml-mode wgrep-ag web-mode w3m volatile-highlights twittering-mode tabbar-ruler swift-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-swoop helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-ls-git helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime elscreen-persist descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible android-mode ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm)))
+   '(elscreen go package-utils 0xc swift3-mode wgrep-helm 0blayout wgrep-pt yaml-mode wgrep-ag web-mode w3m volatile-highlights twittering-mode swift-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-swoop helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-ls-git helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible android-mode ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -649,35 +646,39 @@
 
 ;; elscreen
 ;;; プレフィクスキーはC-z
-(setq elscreen-prefix-key (kbd "C-z"))
+
+(require 'elscreen)
 (elscreen-start)
-(elscreen-persist-mode 1)
+;;(global-set-key (kbd "C-<tab>")   'elscreen-next)
+;;(global-set-key (kbd "C-S-<tab>") 'elscreen-previous)
+(setq elscreen-prefix-key (kbd "C-z"))
+;;(elscreen-persist-mode 1)
 ;;; タブの先頭に[X]を表示しない
 
 (setq elscreen-tab-display-kill-screen nil)
-;;; header-lineの先頭に[<->]を表示しない
+;; header-lineの先頭に[<->]を表示しない
 (setq elscreen-tab-display-control nil)
-;;; バッファ名・モード名からタブに表示させる内容を決定する(デフォルト設定)
-(setq elscreen-buffer-to-nickname-alist
-      '(("^dired-mode$" .
-         (lambda ()
-           (format "Dired(%s)" dired-directory)))
-        ("^Info-mode$" .
-         (lambda ()
-           (format "Info(%s)" (file-name-nondirectory Info-current-file))))
-        ("^mew-draft-mode$" .
-         (lambda ()
-           (format "Mew(%s)" (buffer-name (current-buffer)))))
-        ("^mew-" . "Mew")
-        ("^irchat-" . "IRChat")
-        ("^liece-" . "Liece")
-        ("^lookup-" . "Lookup")))
-(setq elscreen-mode-to-nickname-alist
-      '(("[Ss]hell" . "shell")
-        ("compilation" . "compile")
-        ("-telnet" . "telnet")
-        ("dict" . "OnlineDict")
-        ("*WL:Message*" . "Wanderlust")))
+;; バッファ名・モード名からタブに表示させる内容を決定する(デフォルト設定)
+ (setq elscreen-buffer-to-nickname-alist
+       '(("^dired-mode$" .
+          (lambda ()
+            (format "Dired(%s)" dired-directory)))
+         ("^Info-mode$" .
+          (lambda ()
+            (format "Info(%s)" (file-name-nondirectory Info-current-file))))
+         ("^mew-draft-mode$" .
+          (lambda ()
+            (format "Mew(%s)" (buffer-name (current-buffer)))))
+         ("^mew-" . "Mew")
+         ("^irchat-" . "IRChat")
+         ("^liece-" . "Liece")
+         ("^lookup-" . "Lookup")))
+ (setq elscreen-mode-to-nickname-alist
+       '(("[Ss]hell" . "shell")
+         ("compilation" . "compile")
+         ("-telnet" . "telnet")
+         ("dict" . "OnlineDict")
+         ("*WL:Message*" . "Wanderlust")))
 
 ;; buffer iserch C-r
 (require 'minibuf-isearch)
@@ -976,6 +977,9 @@
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 
+;; git-complete
+(require 'git-complete)
+(global-set-key (kbd "C-c C-c") 'git-complete)
 
 ;; markdown mode
 ;;(require 'w3m)

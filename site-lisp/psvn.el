@@ -582,7 +582,7 @@ If t, their full path name will be displayed, else only the filename."
           (if (boundp var)
               (global-unset-key (symbol-value var)))
           (set var value)
-          (global-set-key (symbol-value var) 'svn-global-keymap)))
+          (global (symbol-value var) 'svn-global-keymap)))
 
 (defcustom svn-admin-default-create-directory "~/"
   "*The default directory that is suggested for `svn-admin-create'."

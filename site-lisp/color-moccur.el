@@ -235,12 +235,12 @@
 ;;         ("config" "~/mylisp/"  ("\\.js" "\\.el$") nil)
 ;;         ("1.99" "d:/unix/Meadow2/1.99a6/" (".*") sub)
 ;;         ))
-;; (global-set-key "\C-x\C-o" 'occur-by-moccur)
+;; (global "\C-x\C-o" 'occur-by-moccur)
 ;; (define-key Buffer-menu-mode-map "O" 'Buffer-menu-moccur)
 ;; (define-key dired-mode-map "O" 'dired-do-moccur)
-;; (global-set-key "\C-c\C-x\C-o" 'moccur)
-;; (global-set-key "\M-f" 'grep-buffers)
-;; (global-set-key "\C-c\C-o" 'search-buffers)
+;; (global "\C-c\C-x\C-o" 'moccur)
+;; (global "\M-f" 'grep-buffers)
+;; (global "\C-c\C-o" 'search-buffers)
 
 ;;; Furthermore
 ;;;; Function for regexp
