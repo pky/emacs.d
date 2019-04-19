@@ -1,3 +1,4 @@
+
 (setq gc-cons-threshold 134217728)
 (setq load-prefer-newer t)
 (set-frame-parameter (selected-frame) 'alpha '(90 90))
@@ -1046,6 +1047,33 @@
 
 (require 'find-file-in-project)
 (global-set-key [(super shift i)] 'find-file-in-project)
+
+;; Org modeの設定
+
+; ファイルの場所
+(setq org-directory "/Volumes/GoogleDrive/マイドライブ")
+(setq org-default-notes-file "notes.org")
+; Org-captureの設定
+; Org-captureを呼び出すキーシーケンス
+(define-key global-map "\C-cc" 'org-capture)
+; Org-captureのテンプレート（メニュー）の設定
+(setq org-capture-templates
+      '(("n" "Note" entry (file+headline "/Volumes/GoogleDrive/マイドライブ/notes.org" "Notes")
+         "* %?\nEntered on %U\n %i\n %a")
+        ))
+
+; メモをC-M-^一発で見るための設定
+; https://qiita.com/takaxp/items/0b717ad1d0488b74429d から拝借
+(defun show-org-buffer (file)
+  "Show an org-file FILE on the current buffer."
+  (interactive)
+  (if (get-buffer file)
+      (let ((buffer (get-buffer file)))
+        (switch-to-buffer buffer)
+        (message "%s" file))
+    (find-file (concat "/Volumes/GoogleDrive/マイドライブ/" file))))
+(global-set-key (kbd "C-M-^") '(lambda () (interactive)
+                                 (show-org-buffer "notes.org")))
 
 
 (custom-set-faces
