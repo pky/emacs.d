@@ -4,7 +4,7 @@
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
  (filename . "/Volumes/GoogleDrive/マイドライブ/notes.org")
- (front-context-string . "** today is \n En")
- (rear-context-string . "* Notes\n** Test\n")
- (position . 17))
+ (front-context-string . "** 追加 CSS\nh3{\n	m")
+ (rear-context-string . "*Notes][Notes]]\n")
+ (position . 32475))
 )
