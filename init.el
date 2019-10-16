@@ -239,7 +239,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -345,11 +345,11 @@
   '(lambda() (coffee-custom)))
 
 ;; gjshint jshint && gjslint
-(require 'flymake-gjshint)
-(add-hook 'js2-mode-hook 'flymake-gjshint:load)
-(add-hook 'js2-mode-hook
-(function (lambda ()
-(setq ac-js2-evaluate-calls t))))
+;;(require 'flymake-gjshint)
+;;(add-hook 'js2-mode-hook 'flymake-gjshint:load)
+;;(add-hook 'js2-mode-hook
+;;(function (lambda ()
+;;(setq ac-js2-evaluate-calls t))))
 
 ;;flaymake-mode js,xml,html,css,scss,java,ruby,perl
 (require 'flymake)
@@ -368,122 +368,122 @@
 
   ;; flymake coffee
   ;; https://github.com/purcell/flymake-coffee
-  (require 'flymake-coffee)
-  (add-hook 'coffee-mode-hook 'flymake-coffee-load)
+;;  (require 'flymake-coffee)
+;;  (add-hook 'coffee-mode-hook 'flymake-coffee-load)
 
-  (defun flymake-gjslint-init ()
-    "Initialize flymake for gjslint"
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace)))
-      (list "gjslint" (list temp-file "--nosummary --strict --max_line_length=100"))))
+;;   (defun flymake-gjslint-init ()
+;;     "Initialize flymake for gjslint"
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace)))
+;;       (list "gjslint" (list temp-file "--nosummary --strict --max_line_length=100"))))
 
-  (add-to-list 'flymake-allowed-file-name-masks
-               '(".+\\.js$"
-                 flymake-gjslint-init
-                 flymake-simple-cleanup
-                 flymake-get-real-file-name))
-  (add-to-list 'flymake-err-line-patterns
-               '("^Line \\([[:digit:]]+\\), E:[[:digit:]]+: "
-                 nil 1 nil))
-  (provide 'gjslint)
-  (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;;                '(".+\\.js$"
+;;                  flymake-gjslint-init
+;;                  flymake-simple-cleanup
+;;                  flymake-get-real-file-name))
+;;   (add-to-list 'flymake-err-line-patterns
+;;                '("^Line \\([[:digit:]]+\\), E:[[:digit:]]+: "
+;;                  nil 1 nil))
+;;   (provide 'gjslint)
+;;   (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
 
 
-  ;;; google compiler closure
-   (defun flymake-closure-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "~/.emacs.d/bin/closure.sh" (list local-file))))
-   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.js|\\.html$\\|\\.tpl\\|\\.erb\\'" flymake-closure-init))
-   (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
+;;   ;;; google compiler closure
+;;    (defun flymake-closure-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "~/.emacs.d/bin/closure.sh" (list local-file))))
+;;    (add-to-list 'flymake-allowed-file-name-masks
+;;                '("\\.js|\\.html$\\|\\.tpl\\|\\.erb\\'" flymake-closure-init))
+;;    (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
 
-  ;;;xml
-    (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
-    (add-hook 'xsl-mode-hook
-              (lambda () (flymake-mode t)))
+;;   ;;;xml
+;;     (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
+;;     (add-hook 'xsl-mode-hook
+;;               (lambda () (flymake-mode t)))
 
-;;html5
-(defun flymake-html-init ()
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "~/.emacs.d/bin/html5check.py" (list local-file))))
-(add-to-list 'flymake-allowed-file-name-masks
-             '("\\.html$\\|\\.tpl|\\.erb" flymake-html-init))
-(add-to-list 'flymake-err-line-patterns
-             ;; '("\\(Warning:.*?\\|Error:.*?\\)\nFrom line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*" nil 2 3 1))
-             '("\\(Warning:.*?\\|Error:.*?\\)From line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*?$" nil 2 3 1))
-(add-hook 'web-mode-hook '(lambda () (flymake-mode t)))
+;; ;;html5
+;; (defun flymake-html-init ()
+;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                          'flymake-create-temp-inplace))
+;;              (local-file (file-relative-name
+;;                           temp-file
+;;                           (file-name-directory buffer-file-name))))
+;;         (list "~/.emacs.d/bin/html5check.py" (list local-file))))
+;; (add-to-list 'flymake-allowed-file-name-masks
+;;              '("\\.html$\\|\\.tpl|\\.erb" flymake-html-init))
+;; (add-to-list 'flymake-err-line-patterns
+;;              ;; '("\\(Warning:.*?\\|Error:.*?\\)\nFrom line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*" nil 2 3 1))
+;;              '("\\(Warning:.*?\\|Error:.*?\\)From line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*?$" nil 2 3 1))
+;; (add-hook 'web-mode-hook '(lambda () (flymake-mode t)))
 
-;; css
-    (defun dino-flymake-css-init ()
-      "the initialization fn for flymake for CSS"
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                           'dino-flymake-create-temp-intemp))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list (concat (getenv "windir") "\\system32\\cscript.exe")
-              (list "c:\\users\\dino\\bin\\csslint-wsh.js" "--format=compiler" local-file))))
-    (defvar css-csslint-error-pattern
-      ;;"^[ \t]*\\([A-Za-z.0-9_: \\-]+\\)(\\([0-9]+\\)[,]\\( *[0-9]+\\)) CSSLINT: ?\\(error\\|warning\\) ?: +\\(.+\\)$"
-      "^[ \t]*\\([\._A-Za-z0-9][^(\n]+\\.css\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) CSSLINT: ?\\(\\(error\\|warning\\) ?: +\\(.+\\)\\)$"
-      "The regex pattern for CSSLint error or warning messages. Follows
-    the same form as an entry in `flymake-err-line-patterns'. The
-    value is a STRING, a regex.")
-    (defun dino-css-flymake-install ()
-      "install flymake stuff for CSS files."
-      (add-to-list
-       'flymake-err-line-patterns
-       (list css-csslint-error-pattern 1 2 3 4))
-      (let* ((key "\\.css\\'")
-             (cssentry (assoc key flymake-allowed-file-name-masks)))
-        (if cssentry
-            (setcdr cssentry '(dino-flymake-css-init))
-          (add-to-list
-           'flymake-allowed-file-name-masks
-           (list key 'dino-flymake-css-init)))))
-    (eval-after-load "compile"
-      '(progn
-         (if (boundp 'compilation-error-regexp-alist-alist)
-          (progn
-            (add-to-list
-             'compilation-error-regexp-alist-alist
-             (list 'csslint-wsh css-csslint-error-pattern 1 2 3))
-            (add-to-list
-             'compilation-error-regexp-alist
-             'csslint-wsh)))))
-    (eval-after-load "flymake"
-      '(progn
-         (dino-css-flymake-install)))
+;; ;; css
+;;     (defun dino-flymake-css-init ()
+;;       "the initialization fn for flymake for CSS"
+;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                            'dino-flymake-create-temp-intemp))
+;;              (local-file (file-relative-name
+;;                           temp-file
+;;                           (file-name-directory buffer-file-name))))
+;;         (list (concat (getenv "windir") "\\system32\\cscript.exe")
+;;               (list "c:\\users\\dino\\bin\\csslint-wsh.js" "--format=compiler" local-file))))
+;;     (defvar css-csslint-error-pattern
+;;       ;;"^[ \t]*\\([A-Za-z.0-9_: \\-]+\\)(\\([0-9]+\\)[,]\\( *[0-9]+\\)) CSSLINT: ?\\(error\\|warning\\) ?: +\\(.+\\)$"
+;;       "^[ \t]*\\([\._A-Za-z0-9][^(\n]+\\.css\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) CSSLINT: ?\\(\\(error\\|warning\\) ?: +\\(.+\\)\\)$"
+;;       "The regex pattern for CSSLint error or warning messages. Follows
+;;     the same form as an entry in `flymake-err-line-patterns'. The
+;;     value is a STRING, a regex.")
+;;     (defun dino-css-flymake-install ()
+;;       "install flymake stuff for CSS files."
+;;       (add-to-list
+;;        'flymake-err-line-patterns
+;;        (list css-csslint-error-pattern 1 2 3 4))
+;;       (let* ((key "\\.css\\'")
+;;              (cssentry (assoc key flymake-allowed-file-name-masks)))
+;;         (if cssentry
+;;             (setcdr cssentry '(dino-flymake-css-init))
+;;           (add-to-list
+;;            'flymake-allowed-file-name-masks
+;;            (list key 'dino-flymake-css-init)))))
+;;     (eval-after-load "compile"
+;;       '(progn
+;;          (if (boundp 'compilation-error-regexp-alist-alist)
+;;           (progn
+;;             (add-to-list
+;;              'compilation-error-regexp-alist-alist
+;;              (list 'csslint-wsh css-csslint-error-pattern 1 2 3))
+;;             (add-to-list
+;;              'compilation-error-regexp-alist
+;;              'csslint-wsh)))))
+;;     (eval-after-load "flymake"
+;;       '(progn
+;;          (dino-css-flymake-install)))
 
 
 ;;; SCSS
-(defconst scss-validator "sass")
+;; (defconst scss-validator "sass")
 
-(defun flymake-scss-init ()
-  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-         (local-file  (file-relative-name
-                       temp-file
-                       (file-name-directory buffer-file-name))))
-    (list scss-validator (list "--scss" "--check" local-file))))
+;; (defun flymake-scss-init ()
+;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;          (local-file  (file-relative-name
+;;                        temp-file
+;;                        (file-name-directory buffer-file-name))))
+;;     (list scss-validator (list "--scss" "--check" local-file))))
 
-(push '(".+\\.scss$" flymake-scss-init) flymake-allowed-file-name-masks)
+;; (push '(".+\\.scss$" flymake-scss-init) flymake-allowed-file-name-masks)
 
-;;'("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2 nil)
+;; ;;'("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2 nil)
 
-;;;; TODO: Not possible to have multiline regexs in flymake-err-line-patterns?
-;; '("Syntax error:\s*\\(.*\\)\n\s*on line\s*\\([0-9]+\\) of \\([^ ]+\\)$" 3 2 nil 1)
-(push '("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2) flymake-err-line-patterns)
+;; ;;;; TODO: Not possible to have multiline regexs in flymake-err-line-patterns?
+;; ;; '("Syntax error:\s*\\(.*\\)\n\s*on line\s*\\([0-9]+\\) of \\([^ ]+\\)$" 3 2 nil 1)
+;; (push '("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2) flymake-err-line-patterns)
 
-(provide 'flymake-scss)
+;; (provide 'flymake-scss)
 
 ;; java flymake
 
@@ -524,20 +524,20 @@
 (set-face-foreground 'flymake-warnline "black")
 
 ;; http://d.hatena.ne.jp/xcezx/20080314/1205475020
-(defun flymake-display-err-minibuf ()
-  "Displays the error/warning for the current line in the minibuffer"
-  (interactive)
-  (let* ((line-no             (flymake-current-line-no))
-         (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
-         (count               (length line-err-info-list)))
-    (while (> count 0)
-      (when line-err-info-list
-        (let* ((file       (flymake-ler-file (nth (1- count) line-err-info-list)))
-               (full-file  (flymake-ler-full-file (nth (1- count) line-err-info-list)))
-               (text (flymake-ler-text (nth (1- count) line-err-info-list)))
-               (line       (flymake-ler-line (nth (1- count) line-err-info-list))))
-          (message "[%s] %s" line text)))
-      (setq count (1- count)))))
+;; (defun flymake-display-err-minibuf ()
+;;   "Displays the error/warning for the current line in the minibuffer"
+;;   (interactive)
+;;   (let* ((line-no             (flymake-current-line-no))
+;;          (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
+;;          (count               (length line-err-info-list)))
+;;     (while (> count 0)
+;;       (when line-err-info-list
+;;         (let* ((file       (flymake-ler-file (nth (1- count) line-err-info-list)))
+;;                (full-file  (flymake-ler-full-file (nth (1- count) line-err-info-list)))
+;;                (text (flymake-ler-text (nth (1- count) line-err-info-list)))
+;;                (line       (flymake-ler-line (nth (1- count) line-err-info-list))))
+;;           (message "[%s] %s" line text)))
+;;       (setq count (1- count)))))
 
 ;; http://unknownplace.org/memo/2007/12/21#e001
 (defvar flymake-perl-err-line-patterns
@@ -601,7 +601,6 @@
 ;; Also make sure sass location is in emacs PATH, example:
 ;; (setq exec-path (cons (expand-file-name "~/.gem/ruby/1.8/bin") exec-path))
 ;; (setq exec-path (cons (expand-file-name "~/.rvm/gems/ruby-1.9.3-p194/bin") exec-path))
-
 
 ;; js2-mode
 (autoload 'js2-mode "js2-mode" nil t)
@@ -976,7 +975,13 @@
 ;;(add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
 ;;(add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
 ;;swift
-(require 'swift-mode)
+;;(require 'swift-mode)
+
+;; flycheck
+;;(package-install 'flycheck)
+(global-flycheck-mode)
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
 
 ;; open-junk-file
 (require 'open-junk-file)
@@ -1096,25 +1101,27 @@
 (global-set-key (kbd "C-M-^") '(lambda () (interactive)
                                  (show-org-buffer "notes.org")))
 
+
+;;(flycheck-add-mode 'javascript-eslint 'js-mode)
 ;; prettier
 
 (require 'prettier-js)
 (add-hook 'js2-mode-hook 'prettier-js-mode)
 (add-hook 'web-mode-hook 'prettier-js-mode)
 
-(setq prettier-js-args '(
+;;(setq prettier-js-args '(
 ;;  "--trailing-comma" "all"
 ;;  "--bracket-spacing" "false"
-))
+;;))
 
-(defun enable-minor-mode (my-pair)
-  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
-  (if (buffer-file-name)
-      (if (string-match (car my-pair) buffer-file-name)
-      (funcall (cdr my-pair)))))
-(add-hook 'web-mode-hook #'(lambda ()
-                            (enable-minor-mode
-                             '("\\.jsx?\\'" . prettier-js-mode))))
+;; (defun enable-minor-mode (my-pair)
+;;   "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+;;   (if (buffer-file-name)
+;;       (if (string-match (car my-pair) buffer-file-name)
+;;       (funcall (cdr my-pair)))))
+;; (add-hook 'web-mode-hook #'(lambda ()
+;;                             (enable-minor-mode
+;;                              '("\\.jsx?\\'" . prettier-js-mode))))
 
 
 (custom-set-faces
