@@ -239,7 +239,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(use-package add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -979,9 +979,6 @@
 
 ;; flycheck
 ;;(package-install 'flycheck)
-(global-flycheck-mode)
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-(flycheck-add-mode 'javascript-eslint 'js2-mode)
 
 ;; open-junk-file
 (require 'open-junk-file)
@@ -1102,7 +1099,29 @@
                                  (show-org-buffer "notes.org")))
 
 
-;;(flycheck-add-mode 'javascript-eslint 'js-mode)
+;; ;;js-auto-format-mode
+;; (add-hook 'js-mode-hook #'js-auto-format-mode)
+;; (use-package js-auto-format-mode
+;;   :config
+;;   (add-hook 'js-mode-hook #'js-auto-format-mode))
+
+;; (use-package add-node-modules-path
+;;   :config
+;;   (add-hook 'web-mode-hook #'add-node-modules-path))
+
+;; (custom-set-variables
+;;   '(js-auto-format-command "prettier")
+;;   '(js-auto-format-command-args "--write --single-quote"))
+
+;; (defun my/enable-auto-format-on-css ()
+;;   (setq-local js-auto-format-command "prettier")
+;;   (setq-local js-auto-format-command-args "--write --no-color")
+;;   (js-auto-format-mode))
+;; (add-hook 'css-mode-hook #'my/enable-auto-format-on-css)
+
+(global-flycheck-mode)
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
+(flycheck-add-mode 'javascript-eslint 'web-mode)
 ;; prettier
 
 (require 'prettier-js)
