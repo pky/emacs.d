@@ -6,5 +6,5 @@ elscreen
 place
 elpa/archives
 elpa/archives/*
-
+.cask/*
 
