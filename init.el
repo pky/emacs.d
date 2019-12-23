@@ -1210,6 +1210,7 @@
 (add-hook 'go-mode-hook #'lsp)
 (add-hook 'js2-mode-hook #'lsp)
 (add-hook 'web-mode-hook #'lsp)
+(add-hook 'php-mode-hook #'lsp)
 
 ;; func
 (defun lsp-mode-init ()
