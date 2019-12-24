@@ -33,6 +33,7 @@
         )
         load-path))
 
+
 ;; set fullpath in title bar
 (setq frame-title-format "%f")
 ;; tab space width 4
@@ -1122,11 +1123,23 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+
+(eval-after-load 'js-mode
+  '(add-hook 'js-mode-hook #'add-node-modules-path))
+
 ;; prettier
 
 (require 'prettier-js)
-(add-hook 'js2-mode-hook 'prettier-js-mode)
-(add-hook 'web-mode-hook 'prettier-js-mode)
+(eval-after-load 'web-mode
+    '(progn
+       (add-hook 'web-mode-hook #'add-node-modules-path)
+       (add-hook 'web-mode-hook #'prettier-js-mode)))
+(eval-after-load 'js2-mode
+    '(progn
+       (add-hook 'js2-mode-hook #'add-node-modules-path)
+       (add-hook 'js2-mode-hook #'prettier-js-mode)))
+;;(add-hook 'js2-mode-hook 'prettier-js-mode)
+;;(add-hook 'web-mode-hook 'prettier-js-mode)
 
 ;;(setq prettier-js-args '(
 ;;  "--trailing-comma" "all"
@@ -1172,3 +1185,55 @@
 ;;(load-theme 'darcula t)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+
+;; cask
+(require 'cask "/usr/local/opt/cask/cask.el")
+(cask-initialize)
+
+;; ----- lsp ----- ;;
+
+;;;;;;;;;;;;;;
+;; lsp-mode ;;
+;;;;;;;;;;;;;;
+(use-package lsp-mode)
+
+;; config
+(setq lsp-print-io nil)
+(setq lsp-trace nil)
+(setq lsp-print-performance nil)
+(setq lsp-auto-guess-root t)
+(setq lsp-document-sync-method 'incremental)
+(setq lsp-response-timeout 5)
+
+;; hook
+(add-hook 'go-mode-hook #'lsp)
+(add-hook 'js2-mode-hook #'lsp)
+(add-hook 'web-mode-hook #'lsp)
+(add-hook 'php-mode-hook #'lsp)
+
+;; func
+(defun lsp-mode-init ()
+    (lsp)
+    (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
+    (global-set-key (kbd "M-.") 'xref-find-definitions)
+    (global-set-key (kbd "M-/") 'xref-find-references))
+
+;;;;;;;;;;;;;;
+;;  lsp-ui  ;;
+;;;;;;;;;;;;;;
+(use-package lsp-ui)
+
+;; config
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-doc-header t)
+(setq lsp-ui-doc-include-signature t)
+(setq lsp-ui-doc-max-width 150)
+(setq lsp-ui-doc-max-height 30)
+(setq lsp-ui-peek-enable t)
+
+;; hook
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+
+(require 'company-lsp)
+(push 'company-lsp company-backends)
