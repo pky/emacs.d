@@ -33,7 +33,6 @@
         )
         load-path))
 
-
 ;; set fullpath in title bar
 (setq frame-title-format "%f")
 ;; tab space width 4
@@ -637,27 +636,6 @@
              (local-set-key "@" 'js-doc-insert-tag)
              ))
 
-;; tide typescript
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
-
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
-
-;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
-
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-
 ;; ruby-electric.el
 (require 'ruby-electric)
 (add-hook 'ruby-mode-hook '(lambda () (ruby-electric-mode t)))
@@ -1008,8 +986,13 @@
 
 
 ;; git-complete
+
 (require 'git-complete)
-(global-set-key (kbd "C-c C-c") 'git-complete)
+(global-unset-key (kbd "C-c C-g")) ;; 一応unbindしておきましょう
+(global-set-key (kbd "C-c C-g") 'git-complete)
+(add-to-list 'load-path "~/.emacs.d/git-complete") ;; お好きなように
+(setq git-complete-enable-autopair t)
+;;(global-set-key (kbd "C-c C-c") 'git-complete)
 
 ;; markdown mode
 ;;(require 'w3m)
@@ -1123,23 +1106,12 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
-
-(eval-after-load 'js-mode
-  '(add-hook 'js-mode-hook #'add-node-modules-path))
-
 ;; prettier
 
 (require 'prettier-js)
-(eval-after-load 'web-mode
-    '(progn
-       (add-hook 'web-mode-hook #'add-node-modules-path)
-       (add-hook 'web-mode-hook #'prettier-js-mode)))
-(eval-after-load 'js2-mode
-    '(progn
-       (add-hook 'js2-mode-hook #'add-node-modules-path)
-       (add-hook 'js2-mode-hook #'prettier-js-mode)))
-;;(add-hook 'js2-mode-hook 'prettier-js-mode)
-;;(add-hook 'web-mode-hook 'prettier-js-mode)
+(add-hook 'js-mode-hook 'prettier-js-mode)
+(add-hook 'js2-mode-hook 'prettier-js-mode)
+(add-hook 'web-mode-hook 'prettier-js-mode)
 
 ;;(setq prettier-js-args '(
 ;;  "--trailing-comma" "all"
@@ -1185,55 +1157,3 @@
 ;;(load-theme 'darcula t)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
-
-;; cask
-(require 'cask "/usr/local/opt/cask/cask.el")
-(cask-initialize)
-
-;; ----- lsp ----- ;;
-
-;;;;;;;;;;;;;;
-;; lsp-mode ;;
-;;;;;;;;;;;;;;
-(use-package lsp-mode)
-
-;; config
-(setq lsp-print-io nil)
-(setq lsp-trace nil)
-(setq lsp-print-performance nil)
-(setq lsp-auto-guess-root t)
-(setq lsp-document-sync-method 'incremental)
-(setq lsp-response-timeout 5)
-
-;; hook
-(add-hook 'go-mode-hook #'lsp)
-(add-hook 'js2-mode-hook #'lsp)
-(add-hook 'web-mode-hook #'lsp)
-(add-hook 'php-mode-hook #'lsp)
-
-;; func
-(defun lsp-mode-init ()
-    (lsp)
-    (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
-    (global-set-key (kbd "M-.") 'xref-find-definitions)
-    (global-set-key (kbd "M-/") 'xref-find-references))
-
-;;;;;;;;;;;;;;
-;;  lsp-ui  ;;
-;;;;;;;;;;;;;;
-(use-package lsp-ui)
-
-;; config
-(setq lsp-ui-doc-enable t)
-(setq lsp-ui-doc-header t)
-(setq lsp-ui-doc-include-signature t)
-(setq lsp-ui-doc-max-width 150)
-(setq lsp-ui-doc-max-height 30)
-(setq lsp-ui-peek-enable t)
-
-;; hook
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-
-(require 'company-lsp)
-(push 'company-lsp company-backends)
