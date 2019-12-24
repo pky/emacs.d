@@ -1127,7 +1127,7 @@
 (eval-after-load 'js-mode
   '(add-hook 'js-mode-hook #'add-node-modules-path))
 
-;; prettier
+;; prettifer
 
 (require 'prettier-js)
 (eval-after-load 'web-mode
@@ -1138,6 +1138,15 @@
     '(progn
        (add-hook 'js2-mode-hook #'add-node-modules-path)
        (add-hook 'js2-mode-hook #'prettier-js-mode)))
+(eval-after-load 'typescript-mode
+    '(progn
+       (add-hook 'typescript-mode-hook #'add-node-modules-path)
+       (add-hook 'typescript-mode-hook #'prettier-js-mode)))
+(eval-after-load 'vue-mode
+    '(progn
+       (add-hook 'vue-mode-hook #'add-node-modules-path)
+       (add-hook 'vue-mode-hook #'prettier-js-mode)))
+
 ;;(add-hook 'js2-mode-hook 'prettier-js-mode)
 ;;(add-hook 'web-mode-hook 'prettier-js-mode)
 
@@ -1212,6 +1221,7 @@
 (add-hook 'web-mode-hook #'lsp)
 (add-hook 'php-mode-hook #'lsp)
 (add-hook 'typescript-mode-hook #'lsp)
+(add-hook 'vue-mode-hook #'lsp)
 
 ;; func
 (defun lsp-mode-init ()
@@ -1238,3 +1248,13 @@
 
 (require 'company-lsp)
 (push 'company-lsp company-backends)
+
+
+(setq vue-mode-packages
+  '(vue-mode))
+
+(setq vue-mode-excluded-packages '())
+
+(defun vue-mode/init-vue-mode ()
+  "Initialize my package"
+  (use-package vue-mode))
