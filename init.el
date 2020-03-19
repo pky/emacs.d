@@ -33,7 +33,6 @@
         )
         load-path))
 
-
 ;; set fullpath in title bar
 (setq frame-title-format "%f")
 ;; tab space width 4
@@ -628,6 +627,11 @@
             (define-key sgml-mode-map (kbd "C-c C-r") 'rename-sgml-tag)))
 (add-hook 'js2-mode-hook 'ac-js2-mode)
 
+;; js tide
+(add-hook 'js2-mode-hook #'setup-tide-mode)
+;; configure javascript-tide checker to run after your default javascript checker
+;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+
 ;;js-doc
 (require 'js-doc)
 
@@ -636,27 +640,6 @@
              (local-set-key "\C-ci" 'js-doc-insert-function-doc)
              (local-set-key "@" 'js-doc-insert-tag)
              ))
-
-;; tide typescript
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
-
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
-
-;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
-
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;; ruby-electric.el
 (require 'ruby-electric)
@@ -959,6 +942,11 @@
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
 
 (defun web-mode-hook ()
   ;;(electric-indent-local-mode -1)
@@ -1008,8 +996,13 @@
 
 
 ;; git-complete
+
 (require 'git-complete)
-(global-set-key (kbd "C-c C-c") 'git-complete)
+(global-unset-key (kbd "C-c C-g")) ;; 一応unbindしておきましょう
+(global-set-key (kbd "C-c C-g") 'git-complete)
+(add-to-list 'load-path "~/.emacs.d/git-complete") ;; お好きなように
+(setq git-complete-enable-autopair t)
+;;(global-set-key (kbd "C-c C-c") 'git-complete)
 
 ;; markdown mode
 ;;(require 'w3m)
@@ -1123,6 +1116,9 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+;; enable typescript-tslint checker
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+
 
 (eval-after-load 'js-mode
   '(add-hook 'js-mode-hook #'add-node-modules-path))
@@ -1195,7 +1191,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-
 ;; cask
 (require 'cask "/usr/local/opt/cask/cask.el")
 (cask-initialize)
@@ -1205,55 +1200,85 @@
 ;;;;;;;;;;;;;;
 ;; lsp-mode ;;
 ;;;;;;;;;;;;;;
-(use-package lsp-mode)
+;; (use-package lsp-mode)
 
-;; config
-(setq lsp-print-io nil)
-(setq lsp-trace nil)
-(setq lsp-print-performance nil)
-(setq lsp-auto-guess-root t)
-(setq lsp-document-sync-method 'incremental)
-(setq lsp-response-timeout 5)
+;; ;; config
+;; (setq lsp-print-io nil)
+;; (setq lsp-trace nil)
+;; (setq lsp-print-performance nil)
+;; (setq lsp-auto-guess-root t)
+;; (setq lsp-document-sync-method 'incremental)
+;; (setq lsp-response-timeout 5)
 
-;; hook
-(add-hook 'go-mode-hook #'lsp)
-(add-hook 'js2-mode-hook #'lsp)
-(add-hook 'web-mode-hook #'lsp)
-(add-hook 'php-mode-hook #'lsp)
-(add-hook 'typescript-mode-hook #'lsp)
-(add-hook 'vue-mode-hook #'lsp)
+;; ;; hook
+;; (add-hook 'go-mode-hook #'lsp)
+;; (add-hook 'js2-mode-hook #'lsp)
+;; (add-hook 'web-mode-hook #'lsp)
+;; (add-hook 'php-mode-hook #'lsp)
+;; (add-hook 'typescript-mode-hook #'lsp)
+;; (add-hook 'vue-mode-hook #'lsp)
 
-;; func
-(defun lsp-mode-init ()
-    (lsp)
-    (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
-    (global-set-key (kbd "M-.") 'xref-find-definitions)
-    (global-set-key (kbd "M-/") 'xref-find-references))
+;; ;; func
+;; (defun lsp-mode-init ()
+;;     (lsp)
+;;     (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
+;;     (global-set-key (kbd "M-.") 'xref-find-definitions)
+;;     (global-set-key (kbd "M-/") 'xref-find-references))
 
-;;;;;;;;;;;;;;
-;;  lsp-ui  ;;
-;;;;;;;;;;;;;;
-(use-package lsp-ui)
+;; ;;;;;;;;;;;;;;
+;; ;;  lsp-ui  ;;
+;; ;;;;;;;;;;;;;;
+;; (use-package lsp-ui)
 
-;; config
-(setq lsp-ui-doc-enable t)
-(setq lsp-ui-doc-header t)
-(setq lsp-ui-doc-include-signature t)
-(setq lsp-ui-doc-max-width 150)
-(setq lsp-ui-doc-max-height 30)
-(setq lsp-ui-peek-enable t)
+;; ;; config
+;; (setq lsp-ui-doc-enable t)
+;; (setq lsp-ui-doc-header t)
+;; (setq lsp-ui-doc-include-signature t)
+;; (setq lsp-ui-doc-max-width 150)
+;; (setq lsp-ui-doc-max-height 30)
+;; (setq lsp-ui-peek-enable t)
 
-;; hook
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;; ;; hook
+;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
-(require 'company-lsp)
-(push 'company-lsp company-backends)
+;; (require 'company-lsp)
+;; (push 'company-lsp company-backends)
 
 
-(setq vue-mode-packages
-  '(vue-mode))
+;; (setq vue-mode-packages
+;;   '(vue-mode))
 
-(setq vue-mode-excluded-packages '())
+;; (setq vue-mode-excluded-packages '())
+
+;; typescript
+(require 'typescript-mode)
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+;; jsx
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "jsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; configure jsx-tide checker to run after your default jsx checker
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+
 
 (defun vue-mode/init-vue-mode ()
   "Initialize my package"
