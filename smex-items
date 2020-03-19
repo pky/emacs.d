@@ -1,0 +1,20 @@
+
+;; ----- smex-history -----
+(
+ comment-region
+ package-list-packages
+ ag
+ uncomment-region
+ prettier-js
+ cd
+ 5x5
+)
+
+;; ----- smex-data -----
+(
+ (comment-region . 5)
+ (uncomment-region . 3)
+ (ag . 7)
+ (prettier-js . 1)
+ (package-list-packages . 1)
+)

@@ -937,6 +937,13 @@
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; enable typescript-tslint checker
+;;(flycheck-add-mode 'typescript-tslint 'web-mode)
 
 (defun web-mode-hook ()
   ;;(electric-indent-local-mode -1)
@@ -1106,12 +1113,32 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
-;; prettier
+
+(eval-after-load 'js-mode
+  '(add-hook 'js-mode-hook #'add-node-modules-path))
+
+;; prettifer
 
 (require 'prettier-js)
-(add-hook 'js-mode-hook 'prettier-js-mode)
-(add-hook 'js2-mode-hook 'prettier-js-mode)
-(add-hook 'web-mode-hook 'prettier-js-mode)
+(eval-after-load 'web-mode
+    '(progn
+       (add-hook 'web-mode-hook #'add-node-modules-path)
+       (add-hook 'web-mode-hook #'prettier-js-mode)))
+(eval-after-load 'js2-mode
+    '(progn
+       (add-hook 'js2-mode-hook #'add-node-modules-path)
+       (add-hook 'js2-mode-hook #'prettier-js-mode)))
+(eval-after-load 'typescript-mode
+    '(progn
+       (add-hook 'typescript-mode-hook #'add-node-modules-path)
+       (add-hook 'typescript-mode-hook #'prettier-js-mode)))
+(eval-after-load 'vue-mode
+    '(progn
+       (add-hook 'vue-mode-hook #'add-node-modules-path)
+       (add-hook 'vue-mode-hook #'prettier-js-mode)))
+
+;;(add-hook 'js2-mode-hook 'prettier-js-mode)
+;;(add-hook 'web-mode-hook 'prettier-js-mode)
 
 ;;(setq prettier-js-args '(
 ;;  "--trailing-comma" "all"
@@ -1157,3 +1184,86 @@
 ;;(load-theme 'darcula t)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+;; cask
+(require 'cask "/usr/local/opt/cask/cask.el")
+(cask-initialize)
+
+;; ----- lsp ----- ;;
+
+;;;;;;;;;;;;;;
+;; lsp-mode ;;
+;;;;;;;;;;;;;;
+;; (use-package lsp-mode)
+
+;; ;; config
+;; (setq lsp-print-io nil)
+;; (setq lsp-trace nil)
+;; (setq lsp-print-performance nil)
+;; (setq lsp-auto-guess-root t)
+;; (setq lsp-document-sync-method 'incremental)
+;; (setq lsp-response-timeout 5)
+
+;; ;; hook
+;; (add-hook 'go-mode-hook #'lsp)
+;; (add-hook 'js2-mode-hook #'lsp)
+;; (add-hook 'web-mode-hook #'lsp)
+;; (add-hook 'php-mode-hook #'lsp)
+;; (add-hook 'typescript-mode-hook #'lsp)
+;; (add-hook 'vue-mode-hook #'lsp)
+
+;; ;; func
+;; (defun lsp-mode-init ()
+;;     (lsp)
+;;     (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
+;;     (global-set-key (kbd "M-.") 'xref-find-definitions)
+;;     (global-set-key (kbd "M-/") 'xref-find-references))
+
+;; ;;;;;;;;;;;;;;
+;; ;;  lsp-ui  ;;
+;; ;;;;;;;;;;;;;;
+;; (use-package lsp-ui)
+
+;; ;; config
+;; (setq lsp-ui-doc-enable t)
+;; (setq lsp-ui-doc-header t)
+;; (setq lsp-ui-doc-include-signature t)
+;; (setq lsp-ui-doc-max-width 150)
+;; (setq lsp-ui-doc-max-height 30)
+;; (setq lsp-ui-peek-enable t)
+
+;; ;; hook
+;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+
+;; (require 'company-lsp)
+;; (push 'company-lsp company-backends)
+
+
+;; (setq vue-mode-packages
+;;   '(vue-mode))
+
+;; (setq vue-mode-excluded-packages '())
+
+;; typescript
+(require 'typescript-mode)
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+
+(defun vue-mode/init-vue-mode ()
+  "Initialize my package"
+  (use-package vue-mode))

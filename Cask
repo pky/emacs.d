@@ -28,3 +28,4 @@
 (depends-on "lsp-mode")
 (depends-on "lsp-ui")
 (depends-on "company-lsp")
+(depends-on "vue-mode")
