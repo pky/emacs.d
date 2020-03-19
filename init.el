@@ -942,8 +942,6 @@
           (lambda ()
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-;; enable typescript-tslint checker
-;;(flycheck-add-mode 'typescript-tslint 'web-mode)
 
 (defun web-mode-hook ()
   ;;(electric-indent-local-mode -1)
@@ -1113,6 +1111,9 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+;; enable typescript-tslint checker
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+
 
 (eval-after-load 'js-mode
   '(add-hook 'js-mode-hook #'add-node-modules-path))
