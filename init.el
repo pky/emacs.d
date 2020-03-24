@@ -47,13 +47,13 @@
  ;; 英語
  (set-face-attribute 'default nil
              :family "Andale Mono"
-             :height 100)
+             :height 110)
 ;; 日本語
 (set-fontset-font
  nil 'japanese-jisx0208
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
-      '((".*MigMix 1M.*" . 1.1)))
+      '((".*MigMix 1M.*" . 1.2)))
 ;;(set-fontset-font
 ;; nil 'japanese-jisx0208
 ;;  (font-spec :family "Hiragino Kaku Gothic ProN"))
