@@ -226,20 +226,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(comment-style 'extra-line)
- '(custom-enabled-themes '(manoj-dark))
+ '(comment-style (quote extra-line))
+ '(custom-enabled-themes (quote (manoj-dark)))
  '(dash-at-point-legacy-mode t)
  '(helm-delete-minibuffer-contents-from-point t)
- '(helm-ls-git-show-abs-or-relative 'relative)
+ '(helm-ls-git-show-abs-or-relative (quote relative))
  '(helm-mini-default-sources
-   '(helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf))
+   (quote
+    (helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf)))
  '(helm-truncate-lines t t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(use-package add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   (quote
+    (use-package add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm)))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -1170,20 +1172,24 @@
  '(egg-header ((t (:weight normal :height 1.6))))
  '(egg-help-header-1 ((t (:inherit egg-text-base :height 1.2))))
  '(egg-help-header-2 ((((class color) (background dark)) (:inherit egg-text-1 :foreground "LightSteelBlue"))))
- '(erc-keyword-face ((t (:foreground "pale green" :weight normal))) t)
+ '(erc-keyword-face ((t (:foreground "RoyalBlue" :weight normal))) t)
  '(erc-notice-face ((t (:foreground "SlateBlue" :weight normal))) t)
- '(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "dark gray"))))
- '(font-lock-comment-face ((t (:foreground "dark gray" :slant oblique))))
- '(font-lock-constant-face ((t (:foreground "plum2" :weight normal))))
- '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "dark gray" :slant oblique))))
+ '(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "lavender"))))
+ '(font-lock-comment-face ((t (:foreground "lavender" :slant oblique))))
+ '(font-lock-constant-face ((t (:foreground "LightPink1" :weight normal))))
+ '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "lavender" :slant oblique))))
  '(font-lock-function-name-face ((t (:foreground "khaki2" :weight normal :height 1.0))))
- '(font-lock-keyword-face ((t (:foreground "medium turquoise"))))
- '(font-lock-string-face ((t (:foreground "SpringGreen4"))))
- '(font-lock-variable-name-face ((t (:foreground "LightSalmon1"))))
- '(magit-blame-heading ((t (:background "RoyalBlue4" :foreground "gray90"))))
+ '(font-lock-keyword-face ((t (:foreground "CornflowerBlue"))))
+ '(font-lock-string-face ((t (:foreground "LightSalmon"))))
+ '(font-lock-variable-name-face ((t (:foreground "LightSkyBlue"))))
+ '(magit-blame-heading ((t (:background "SteelBlue1" :foreground "gray90"))))
  '(magit-diff-hunk-heading-highlight ((t (:background "gray80" :foreground "OrangeRed4"))))
  '(mumamo-background-chunk-major ((((class color) (min-colors 8)) (:background "*"))) t)
- '(mumamo-background-chunk-submode ((((class color) (min-colors 8)) (:background "*"))) t))
+ '(mumamo-background-chunk-submode ((((class color) (min-colors 8)) (:background "*"))) t)
+ '(web-mode-html-tag-face ((t (:foreground "MediumAquamarine"))))
+ '(web-mode-html-attr-name-face ((t (:foreground "LightSkyBlue"))))
+ '(js2-external-variable ((t (:foreground "PaleTurquoise")))))
+
 
 (put 'erase-buffer 'disabled nil)
 ;;(load-theme 'noctilux t)
