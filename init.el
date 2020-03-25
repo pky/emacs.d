@@ -1175,7 +1175,7 @@
  '(erc-keyword-face ((t (:foreground "RoyalBlue" :weight normal))) t)
  '(erc-notice-face ((t (:foreground "SlateBlue" :weight normal))) t)
  '(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "lavender"))))
- '(font-lock-comment-face ((t (:foreground "lavender" :slant oblique))))
+ '(font-lock-comment-face ((t (:foreground "OliveDrab3" :slant oblique))))
  '(font-lock-constant-face ((t (:foreground "LightPink1" :weight normal))))
  '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "lavender" :slant oblique))))
  '(font-lock-function-name-face ((t (:foreground "khaki2" :weight normal :height 1.0))))
