@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- ag
  load-file
+ list-faces-display
+ ag
  comment-region
  package-list-packages
  uncomment-region
  prettier-js
- cd
 )
 
 ;; ----- smex-data -----
@@ -17,5 +17,6 @@
  (ag . 8)
  (prettier-js . 1)
  (package-list-packages . 1)
- (load-file . 2)
+ (load-file . 30)
+ (list-faces-display . 4)
 )
