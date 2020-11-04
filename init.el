@@ -87,7 +87,8 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(when (version< emacs-version "27.0") (package-initialize))
+;;(when (version< emacs-version "27.0") (package-initialize))
+(unless package--initialized (package-initialize))
 
 ;;close-all-buffers
 (defun close-all-buffers ()
