@@ -58,28 +58,6 @@
 (set-frame-width (next-frame) 138)
 ))
 
-(add-hook 'kill-emacs-hook 'frame-size-save); Emacs終了時
-(add-hook 'window-setup-hook 'frame-size-resume); Emacs起動時
-(defun frame-size-save ()
-  (set-buffer
-   (find-file-noselect (expand-file-name "~/.emacs.d/.framesize")))
-  (erase-buffer)
-  (insert (concat
-           "(set-frame-width (selected-frame) "
-           (int-to-string (frame-width))
-           ") (set-frame-height (selected-frame) "
-           (int-to-string (frame-height))
-           ")"))
-  (save-buffer)
-  (kill-buffer))
-(defun frame-size-resume ()
-  (let* ((file "~/.emacs.d/.framesize"))
-    (if (file-exists-p file)
-        (load-file file))))
-
-(setq initial-frame-alist
-      '((top . 0) (left . 0) (width . 118) (height . 115)))
-
 
 ;;frame,bufferの保存
 ;;(desktop-save-mode t)
