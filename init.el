@@ -273,18 +273,6 @@
 (load-library "migemo")
 (migemo-init)
 
-;; perl-completion
-(setq plcmp-buffer-dabbrev-expansions-number 0)
-(add-hook 'cperl-mode-hook
-          (lambda ()
-            (require 'perl-completion)
-            (perl-completion-mode t)
-            (define-key plcmp-mode-map "\C-\M-f" 'plcmp-builtin-function-complete)
-            (define-key plcmp-mode-map "\C-\M-v" 'plcmp-builtin-variables-complete)
-            (define-key plcmp-mode-map "\C-\M-u" 'plcmp-installed-modules-complete)
-            (define-key plcmp-mode-map "\C-\M-s" 'plcmp-search-word-at-point)
-            (define-key plcmp-mode-map "\C-\M-c" 'plcmp-clear-all-cache)))
-
 ;;; hippie-expand
 (global-set-key "\C-o" 'hippie-expand)
 (setq hippie-expand-try-functions-list
@@ -313,11 +301,6 @@
 
 (add-hook 'coffee-mode-hook
   '(lambda() (coffee-custom)))
-
-;; set-perl5lib
-;; http://svn.coderepos.org/share/lang/elisp/set-perl5lib/set-perl5lib.el
-(require 'set-perl5lib)
-
 
 ;; http://unknownplace.org/memo/2007/12/21#e001
 
