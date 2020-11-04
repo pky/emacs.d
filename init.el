@@ -61,11 +61,10 @@
 
 ;;frame,bufferの保存
 ;;(desktop-save-mode t)
-
+(setq browse-url-mosaic-program nil)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-;;(when (version< emacs-version "27.0") (package-initialize))
 (unless package--initialized (package-initialize))
 
 ;;close-all-buffers
