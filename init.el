@@ -1,8 +1,12 @@
 
-
+;;; Code:
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/") t)
+;;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (unless package--initialized (package-initialize))
 
 
@@ -936,3 +940,10 @@
 (defun vue-mode/init-vue-mode ()
   "Initialize my package"
   (use-package vue-mode))
+
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
+
+;;; init.el ends here
