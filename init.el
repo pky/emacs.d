@@ -42,8 +42,6 @@
 
 (if window-system
 (progn
-;;  (set-default-font "Andale Mono-10")
-;;  (set-fontset-font "fontset-default" 'japanese-jisx0208 '("MigMix 1M" . "unicode-bmp")
  ;; 英語
  (set-face-attribute 'default nil
              :family "Andale Mono"
@@ -54,11 +52,6 @@
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
       '((".*MigMix 1M.*" . 1.2)))
-;;(set-fontset-font
-;; nil 'japanese-jisx0208
-;;  (font-spec :family "Hiragino Kaku Gothic ProN"))
-;;(setq face-font-rescale-alist
-;;      '((".*Hiragino Kaku Gothic ProN.*" . 1.1)))
 
 ;; frame size
 (set-frame-height (next-frame) 115)
@@ -95,10 +88,6 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (when (version< emacs-version "27.0") (package-initialize))
-;;(package-initialize)
-
-;; git egg
-;;(require 'egg)
 
 ;;close-all-buffers
 (defun close-all-buffers ()
@@ -148,13 +137,8 @@
 
 (line-number-mode t)
 (column-number-mode t)
-;(setq delete-auto-save-files nil)
 (setq auto-save-default nil)
 (setq make-backup-files nil)
-;;(require 'auto-save-buffers-enhanced)
-;;(setq auto-save-buffers-enhanced-interval 1)
-;;(auto-save-buffers-enhanced t)
-;;(setq backup-inhibited t)
 (menu-bar-mode -1)
 (tool-bar-mode 0)
 (add-to-list 'load-path "~/.emacs.d/elpa/dash-at-point")
@@ -343,15 +327,6 @@
 
 (add-hook 'coffee-mode-hook
   '(lambda() (coffee-custom)))
-
-;; gjshint jshint && gjslint
-;;(require 'flymake-gjshint)
-;;(add-hook 'js2-mode-hook 'flymake-gjshint:load)
-;;(add-hook 'js2-mode-hook
-;;(function (lambda ()
-;;(setq ac-js2-evaluate-calls t))))
-
-;;flaymake-mode js,xml,html,css,scss,java,ruby,perl
 (require 'flymake)
 
 (when (load "flymake" t)
@@ -364,134 +339,6 @@
   ;; http://code.google.com/intl/ja/closure/utilities/docs/linter_howto.html
   ;; http://d.hatena.ne.jp/Ehren/20101006/1286386194
   ;; http://d.hatena.ne.jp/Ehren/20110912/1315804158
-
-
-  ;; flymake coffee
-  ;; https://github.com/purcell/flymake-coffee
-;;  (require 'flymake-coffee)
-;;  (add-hook 'coffee-mode-hook 'flymake-coffee-load)
-
-;;   (defun flymake-gjslint-init ()
-;;     "Initialize flymake for gjslint"
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-inplace)))
-;;       (list "gjslint" (list temp-file "--nosummary --strict --max_line_length=100"))))
-
-;;   (add-to-list 'flymake-allowed-file-name-masks
-;;                '(".+\\.js$"
-;;                  flymake-gjslint-init
-;;                  flymake-simple-cleanup
-;;                  flymake-get-real-file-name))
-;;   (add-to-list 'flymake-err-line-patterns
-;;                '("^Line \\([[:digit:]]+\\), E:[[:digit:]]+: "
-;;                  nil 1 nil))
-;;   (provide 'gjslint)
-;;   (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
-
-
-;;   ;;; google compiler closure
-;;    (defun flymake-closure-init ()
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-inplace))
-;;            (local-file (file-relative-name
-;;                         temp-file
-;;                         (file-name-directory buffer-file-name))))
-;;       (list "~/.emacs.d/bin/closure.sh" (list local-file))))
-;;    (add-to-list 'flymake-allowed-file-name-masks
-;;                '("\\.js|\\.html$\\|\\.tpl\\|\\.erb\\'" flymake-closure-init))
-;;    (add-hook 'js2-mode-hook (lambda () (flymake-mode t)))
-
-;;   ;;;xml
-;;     (push '(".+\\.xsl$" flymake-xml-init) flymake-allowed-file-name-masks)
-;;     (add-hook 'xsl-mode-hook
-;;               (lambda () (flymake-mode t)))
-
-;; ;;html5
-;; (defun flymake-html-init ()
-;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                          'flymake-create-temp-inplace))
-;;              (local-file (file-relative-name
-;;                           temp-file
-;;                           (file-name-directory buffer-file-name))))
-;;         (list "~/.emacs.d/bin/html5check.py" (list local-file))))
-;; (add-to-list 'flymake-allowed-file-name-masks
-;;              '("\\.html$\\|\\.tpl|\\.erb" flymake-html-init))
-;; (add-to-list 'flymake-err-line-patterns
-;;              ;; '("\\(Warning:.*?\\|Error:.*?\\)\nFrom line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*" nil 2 3 1))
-;;              '("\\(Warning:.*?\\|Error:.*?\\)From line ?\\([0-9]+\\)+,.*?column ?\\([0-9]+\\).*?$" nil 2 3 1))
-;; (add-hook 'web-mode-hook '(lambda () (flymake-mode t)))
-
-;; ;; css
-;;     (defun dino-flymake-css-init ()
-;;       "the initialization fn for flymake for CSS"
-;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                            'dino-flymake-create-temp-intemp))
-;;              (local-file (file-relative-name
-;;                           temp-file
-;;                           (file-name-directory buffer-file-name))))
-;;         (list (concat (getenv "windir") "\\system32\\cscript.exe")
-;;               (list "c:\\users\\dino\\bin\\csslint-wsh.js" "--format=compiler" local-file))))
-;;     (defvar css-csslint-error-pattern
-;;       ;;"^[ \t]*\\([A-Za-z.0-9_: \\-]+\\)(\\([0-9]+\\)[,]\\( *[0-9]+\\)) CSSLINT: ?\\(error\\|warning\\) ?: +\\(.+\\)$"
-;;       "^[ \t]*\\([\._A-Za-z0-9][^(\n]+\\.css\\)(\\([0-9]+\\)[,]\\([0-9]+\\)) CSSLINT: ?\\(\\(error\\|warning\\) ?: +\\(.+\\)\\)$"
-;;       "The regex pattern for CSSLint error or warning messages. Follows
-;;     the same form as an entry in `flymake-err-line-patterns'. The
-;;     value is a STRING, a regex.")
-;;     (defun dino-css-flymake-install ()
-;;       "install flymake stuff for CSS files."
-;;       (add-to-list
-;;        'flymake-err-line-patterns
-;;        (list css-csslint-error-pattern 1 2 3 4))
-;;       (let* ((key "\\.css\\'")
-;;              (cssentry (assoc key flymake-allowed-file-name-masks)))
-;;         (if cssentry
-;;             (setcdr cssentry '(dino-flymake-css-init))
-;;           (add-to-list
-;;            'flymake-allowed-file-name-masks
-;;            (list key 'dino-flymake-css-init)))))
-;;     (eval-after-load "compile"
-;;       '(progn
-;;          (if (boundp 'compilation-error-regexp-alist-alist)
-;;           (progn
-;;             (add-to-list
-;;              'compilation-error-regexp-alist-alist
-;;              (list 'csslint-wsh css-csslint-error-pattern 1 2 3))
-;;             (add-to-list
-;;              'compilation-error-regexp-alist
-;;              'csslint-wsh)))))
-;;     (eval-after-load "flymake"
-;;       '(progn
-;;          (dino-css-flymake-install)))
-
-
-;;; SCSS
-;; (defconst scss-validator "sass")
-
-;; (defun flymake-scss-init ()
-;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-inplace))
-;;          (local-file  (file-relative-name
-;;                        temp-file
-;;                        (file-name-directory buffer-file-name))))
-;;     (list scss-validator (list "--scss" "--check" local-file))))
-
-;; (push '(".+\\.scss$" flymake-scss-init) flymake-allowed-file-name-masks)
-
-;; ;;'("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2 nil)
-
-;; ;;;; TODO: Not possible to have multiline regexs in flymake-err-line-patterns?
-;; ;; '("Syntax error:\s*\\(.*\\)\n\s*on line\s*\\([0-9]+\\) of \\([^ ]+\\)$" 3 2 nil 1)
-;; (push '("on line \\([0-9]+\\) of \\([^ ]+\\)$" 2 1 nil 2) flymake-err-line-patterns)
-
-;; (provide 'flymake-scss)
-
-;; java flymake
-
-;; (defun my-java-flymake-init ()
-;;   (list "javac" (list (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-with-folder-structure))))
-;; (add-to-list 'flymake-allowed-file-name-masks '("\\.java$" my-java-flymake-init flymake-simple-cleanup))
-;; (add-hook 'java-mode-hook 'flymake-mode-on)
 
 ;;ruby
 (defun flymake-ruby-init ()
@@ -522,22 +369,6 @@
 (set-face-foreground 'flymake-errline "black")
 (set-face-background 'flymake-warnline "yellow")
 (set-face-foreground 'flymake-warnline "black")
-
-;; http://d.hatena.ne.jp/xcezx/20080314/1205475020
-;; (defun flymake-display-err-minibuf ()
-;;   "Displays the error/warning for the current line in the minibuffer"
-;;   (interactive)
-;;   (let* ((line-no             (flymake-current-line-no))
-;;          (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
-;;          (count               (length line-err-info-list)))
-;;     (while (> count 0)
-;;       (when line-err-info-list
-;;         (let* ((file       (flymake-ler-file (nth (1- count) line-err-info-list)))
-;;                (full-file  (flymake-ler-full-file (nth (1- count) line-err-info-list)))
-;;                (text (flymake-ler-text (nth (1- count) line-err-info-list)))
-;;                (line       (flymake-ler-line (nth (1- count) line-err-info-list))))
-;;           (message "[%s] %s" line text)))
-;;       (setq count (1- count)))))
 
 ;; http://unknownplace.org/memo/2007/12/21#e001
 (defvar flymake-perl-err-line-patterns
@@ -578,29 +409,8 @@
   ;; option
   (setq flymake-gui-warnings-enabled nil)
   (load-library "flymake-cursor")
-
-;;(custom-set-faces
-;; '(flymake-errline ((((class color)) (:background "#ffffd7"))))
-;; '(flymake-warnline ((((class color)) (:background "#0a2832")))))
-
 )
 ;;; end flymake mode
-
-;;; SCSS-mode
-;;; scss-mode.el --- Major mode for editing SCSS files
-;;
-;; Author: Anton Johansson <anton.johansson@gmail.com> - http://antonj.se
-;; URL: https://github.com/antonj/scss-mode
-;; Created: Sep 1 23:11:26 2010
-;; Version: 0.5.0
-;; Keywords: scss css mode
-;; Command line utility sass is required, see http://sass-lang.com/
-;; To install sass (haml):
-;; gem install haml
-;;
-;; Also make sure sass location is in emacs PATH, example:
-;; (setq exec-path (cons (expand-file-name "~/.gem/ruby/1.8/bin") exec-path))
-;; (setq exec-path (cons (expand-file-name "~/.rvm/gems/ruby-1.9.3-p194/bin") exec-path))
 
 ;; js2-mode
 (autoload 'js2-mode "js2-mode" nil t)
@@ -629,8 +439,6 @@
 
 ;; js tide
 (add-hook 'js2-mode-hook #'setup-tide-mode)
-;; configure javascript-tide checker to run after your default javascript checker
-;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
 
 ;;js-doc
 (require 'js-doc)
@@ -757,16 +565,8 @@
 ;; From helm-swoop to helm-multi-swoop-all
 (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
 ;; When doing evil-search, hand the word over to helm-swoop
-;; (define-key evil-motion-state-map (kbd "M-i") 'helm-swoop-from-evil-search)
-
 ;; Instead of helm-multi-swoop-all, you can also use helm-multi-swoop-current-mode
 (define-key helm-swoop-map (kbd "M-m") 'helm-multi-swoop-current-mode-from-helm-swoop)
-
-;; Move up and down like isearch
-;;(define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-;;(define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
-;;(define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
-;;(define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
 
 ;; Save buffer when helm-multi-swoop-edit complete
 (setq helm-multi-swoop-edit-save t)
@@ -821,26 +621,6 @@
 ;; ;; C-M-s C-M-sで現在のシンボルをhelm-multi-swoopできるよ！
  (global-set-key (kbd "C-M-s") (with-ido-completion imenus-mode-buffers))
 
-;; ;;; M-oでのmulti-occurをシンボル正規表現にするよう改良
-;;  (push '(occur . imenus-ido-multi-occur) imenus-actions)
-;;  (defun imenus-ido-multi-occur (buffers input)
-;;    (multi-occur buffers
-;;                 (format "\\_<%s\\_>"
-;;                         (regexp-quote (replace-regexp-in-string "^.*|" "" input)))))
-
-;; ;; ;;; C-M-sで関数呼び出しをhelm-multi-swoopできるようにした
-;;   (push '(helm-multi-swoop . imenus-helm-multi-swoop) imenus-actions)
-;;   (defun imenus-helm-multi-swoop (buffers input)
-;;     (helm-multi-swoop (replace-regexp-in-string "^.*|" "" input)
-;;                       (mapcar 'buffer-name buffers)))
-;;   (define-key imenus-minibuffer-map (kbd "C-M-s") 'imenus-exit-to-helm-multi-swoop)
-;;   (defun imenus-exit-to-helm-multi-swoop ()
-;; ;; ;;   "Exit from imenu prompt; start `helm-multi-swoop' with the current input."
-;;     (interactive)
-;;     (setq imenus-exit-status 'helm-multi-swoop)
-;;     (imenus-exit-minibuffer))
-
-
  (global-set-key (kbd "C-;") 'helm-mini)
 (global-set-key (kbd "C-c b") 'helm-descbinds)
 (global-set-key (kbd "C-c o") 'helm-occur)
@@ -854,11 +634,6 @@
  (global-set-key (kbd "C-c C-d") 'helm-browse-project)
 
  (define-key helm-map (kbd "C-h") 'delete-backward-char)
-;; (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
-;; (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-;; (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
-
-
 
 ;; ;; helm-ag
 ;; ;;; 現在のシンボルをデフォルトのクエリにする
@@ -868,19 +643,6 @@
  (global-set-key (kbd "C-M-g") 'helm-ag)
  (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
  (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
-
-;; (require 'expand-region)
-;; (require 'multiple-cursors)
-;; (require 'smartrep)
-
-;; (global-set-key (kbd "C-,") 'er/expand-region)
-;; (global-set-key (kbd "C-M-,") 'er/contract-region)
-
-;; (global-set-key (kbd "<C-M-return>") 'mc/edit-lines)
-;; (smartrep-define-key
-;;  global-map "C-." '(("C-n" . 'mc/mark-next-like-this)
-;;                     ("C-p" . 'mc/mark-previous-like-this)
-;;                     ("*"   . 'mc/mark-all-like-this)))
 
 (global-git-gutter+-mode)
 (require 'git-gutter-fringe+)
@@ -959,15 +721,6 @@
   (setq web-mode-script-padding 2)
   (setq web-mode-block-padding 2)
   (add-hook 'web-mode-hook 'web-mode-hook))
-;;(add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
-;;(add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
-;;(add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
-;;(add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
-;;swift
-;;(require 'swift-mode)
-
-;; flycheck
-;;(package-install 'flycheck)
 
 ;; open-junk-file
 (require 'open-junk-file)
@@ -1002,10 +755,8 @@
 (global-set-key (kbd "C-c C-g") 'git-complete)
 (add-to-list 'load-path "~/.emacs.d/git-complete") ;; お好きなように
 (setq git-complete-enable-autopair t)
-;;(global-set-key (kbd "C-c C-c") 'git-complete)
 
 ;; markdown mode
-;;(require 'w3m)
 (require 'markdown-mode)
 
 ;; angular js ng2-mode
@@ -1092,27 +843,6 @@
 (global-set-key (kbd "C-M-^") '(lambda () (interactive)
                                  (show-org-buffer "notes.org")))
 
-
-;; ;;js-auto-format-mode
-;; (add-hook 'js-mode-hook #'js-auto-format-mode)
-;; (use-package js-auto-format-mode
-;;   :config
-;;   (add-hook 'js-mode-hook #'js-auto-format-mode))
-
-;; (use-package add-node-modules-path
-;;   :config
-;;   (add-hook 'web-mode-hook #'add-node-modules-path))
-
-;; (custom-set-variables
-;;   '(js-auto-format-command "prettier")
-;;   '(js-auto-format-command-args "--write --single-quote"))
-
-;; (defun my/enable-auto-format-on-css ()
-;;   (setq-local js-auto-format-command "prettier")
-;;   (setq-local js-auto-format-command-args "--write --no-color")
-;;   (js-auto-format-mode))
-;; (add-hook 'css-mode-hook #'my/enable-auto-format-on-css)
-
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
@@ -1143,24 +873,6 @@
        (add-hook 'vue-mode-hook #'add-node-modules-path)
        (add-hook 'vue-mode-hook #'prettier-js-mode)))
 
-;;(add-hook 'js2-mode-hook 'prettier-js-mode)
-;;(add-hook 'web-mode-hook 'prettier-js-mode)
-
-;;(setq prettier-js-args '(
-;;  "--trailing-comma" "all"
-;;  "--bracket-spacing" "false"
-;;))
-
-;; (defun enable-minor-mode (my-pair)
-;;   "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
-;;   (if (buffer-file-name)
-;;       (if (string-match (car my-pair) buffer-file-name)
-;;       (funcall (cdr my-pair)))))
-;; (add-hook 'web-mode-hook #'(lambda ()
-;;                             (enable-minor-mode
-;;                              '("\\.jsx?\\'" . prettier-js-mode))))
-
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1190,69 +902,12 @@
 
 
 (put 'erase-buffer 'disabled nil)
-;;(load-theme 'noctilux t)
-;;(load-theme 'darcula t)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
 ;; cask
 (require 'cask "/usr/local/opt/cask/cask.el")
 (cask-initialize)
-
-;; ----- lsp ----- ;;
-
-;;;;;;;;;;;;;;
-;; lsp-mode ;;
-;;;;;;;;;;;;;;
-;; (use-package lsp-mode)
-
-;; ;; config
-;; (setq lsp-print-io nil)
-;; (setq lsp-trace nil)
-;; (setq lsp-print-performance nil)
-;; (setq lsp-auto-guess-root t)
-;; (setq lsp-document-sync-method 'incremental)
-;; (setq lsp-response-timeout 5)
-
-;; ;; hook
-;; (add-hook 'go-mode-hook #'lsp)
-;; (add-hook 'js2-mode-hook #'lsp)
-;; (add-hook 'web-mode-hook #'lsp)
-;; (add-hook 'php-mode-hook #'lsp)
-;; (add-hook 'typescript-mode-hook #'lsp)
-;; (add-hook 'vue-mode-hook #'lsp)
-
-;; ;; func
-;; (defun lsp-mode-init ()
-;;     (lsp)
-;;     (global-set-key (kbd "M-*") 'xref-pop-marker-stack)
-;;     (global-set-key (kbd "M-.") 'xref-find-definitions)
-;;     (global-set-key (kbd "M-/") 'xref-find-references))
-
-;; ;;;;;;;;;;;;;;
-;; ;;  lsp-ui  ;;
-;; ;;;;;;;;;;;;;;
-;; (use-package lsp-ui)
-
-;; ;; config
-;; (setq lsp-ui-doc-enable t)
-;; (setq lsp-ui-doc-header t)
-;; (setq lsp-ui-doc-include-signature t)
-;; (setq lsp-ui-doc-max-width 150)
-;; (setq lsp-ui-doc-max-height 30)
-;; (setq lsp-ui-peek-enable t)
-
-;; ;; hook
-;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-
-;; (require 'company-lsp)
-;; (push 'company-lsp company-backends)
-
-
-;; (setq vue-mode-packages
-;;   '(vue-mode))
-
-;; (setq vue-mode-excluded-packages '())
 
 ;; typescript
 (require 'typescript-mode)
@@ -1281,8 +936,6 @@
               (setup-tide-mode))))
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
-;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
-
 
 (defun vue-mode/init-vue-mode ()
   "Initialize my package"
