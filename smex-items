@@ -1,22 +1,24 @@
 
 ;; ----- smex-history -----
 (
+ uncomment-region
+ comment-region
+ ag
+ magit-blame
+ magit-diff
  load-file
  list-faces-display
- ag
- comment-region
- package-list-packages
- uncomment-region
- prettier-js
 )
 
 ;; ----- smex-data -----
 (
- (comment-region . 5)
- (uncomment-region . 3)
- (ag . 8)
+ (comment-region . 10)
+ (uncomment-region . 5)
+ (ag . 26)
  (prettier-js . 1)
  (package-list-packages . 1)
  (load-file . 30)
  (list-faces-display . 4)
+ (magit-diff . 1)
+ (magit-blame . 2)
 )
