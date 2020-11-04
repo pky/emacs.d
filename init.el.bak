@@ -1,11 +1,4 @@
 
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(unless package--initialized (package-initialize))
-
-
 (setq gc-cons-threshold 134217728)
 (setq load-prefer-newer t)
 (set-frame-parameter (selected-frame) 'alpha '(90 90))
@@ -61,29 +54,18 @@
       '((".*MigMix 1M.*" . 1.2)))
 
 ;; frame size
-;;(set-frame-height (next-frame) 115)
-;;(set-frame-width (next-frame) 138)
+(set-frame-height (next-frame) 115)
+(set-frame-width (next-frame) 138)
 ))
-
-(setq default-frame-alist
-      (append '((width                . 140)  ; フレーム幅
-                (height               . 80 ) ; フレーム高
-                (left                 . 0 ) ; 配置左位置
-                (top                  . 0 ) ; 配置上位置
-                (line-spacing         . 0  ) ; 文字間隔
-                (left-fringe          . 12 ) ; 左フリンジ幅
-                (right-fringe         . 12 ) ; 右フリンジ幅
-                (menu-bar-lines       . 1  ) ; メニューバー
-                (cursor-type          . box) ; カーソル種別
-                (alpha                . 90) ; 透明度
-                )
-              default-frame-alist))
-(setq initial-frame-alist default-frame-alist)
 
 
 ;;frame,bufferの保存
 ;;(desktop-save-mode t)
 (setq browse-url-mosaic-program nil)
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(unless package--initialized (package-initialize))
 
 ;;close-all-buffers
 (defun close-all-buffers ()
