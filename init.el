@@ -226,22 +226,20 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(comment-style (quote extra-line))
- '(custom-enabled-themes (quote (manoj-dark)))
+ '(comment-style 'extra-line)
+ '(custom-enabled-themes '(manoj-dark))
  '(dash-at-point-legacy-mode t)
  '(helm-delete-minibuffer-contents-from-point t)
- '(helm-ls-git-show-abs-or-relative (quote relative))
+ '(helm-ls-git-show-abs-or-relative 'relative)
  '(helm-mini-default-sources
-   (quote
-    (helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf)))
+   '(helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf))
  '(helm-truncate-lines t t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   (quote
-    (use-package add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm)))
+   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide flymake-easy ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights twittering-mode smartrep shorten scss-mode scala-mode2 robe rinari psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js3-mode js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-github-stars helm-git-grep helm-git-files helm-git helm-gist helm-flymake helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack flymake-sass flymake-ruby flymake-php flymake-jslint flymake-jshint flymake-haml flymake-gjshint flymake-cursor flymake-csslint flymake-css flymake-coffee expand-region esqlite epc ensime descbinds-anything dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang anything-show-completion anything-obsolete anything-match-plugin anything-ipython anything-git-goto anything-git anything-exuberant-ctags anything-extension anything-el-swank-fuzzy anything-config anything-complete ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;;; apache mode
@@ -1182,13 +1180,13 @@
  '(font-lock-keyword-face ((t (:foreground "CornflowerBlue"))))
  '(font-lock-string-face ((t (:foreground "LightSalmon"))))
  '(font-lock-variable-name-face ((t (:foreground "LightSkyBlue"))))
+ '(js2-external-variable ((t (:foreground "PaleTurquoise"))))
  '(magit-blame-heading ((t (:background "SteelBlue1" :foreground "gray90"))))
  '(magit-diff-hunk-heading-highlight ((t (:background "gray80" :foreground "OrangeRed4"))))
  '(mumamo-background-chunk-major ((((class color) (min-colors 8)) (:background "*"))) t)
  '(mumamo-background-chunk-submode ((((class color) (min-colors 8)) (:background "*"))) t)
- '(web-mode-html-tag-face ((t (:foreground "MediumAquamarine"))))
  '(web-mode-html-attr-name-face ((t (:foreground "LightSkyBlue"))))
- '(js2-external-variable ((t (:foreground "PaleTurquoise")))))
+ '(web-mode-html-tag-face ((t (:foreground "MediumAquamarine")))))
 
 
 (put 'erase-buffer 'disabled nil)
