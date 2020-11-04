@@ -217,16 +217,8 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org open-junk-file noctilux-theme markdown-mode mark-multiple magit lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy full-ack expand-region esqlite epc ensime dash-at-point darcula-theme ctags company-web company-inf-ruby company-ansible color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ansible ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide ng2-mode find-file-in-project counsel sws-mode adjust-parens kotlin-mode elscreen go package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode google-maps git-gutter-fringe+ git-gutter fuzzy expand-region esqlite epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
-
-;;; apache mode
-(autoload 'apache-mode "apache-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.htaccess\\'"   . apache-mode))
-(add-to-list 'auto-mode-alist '("httpd\\.conf\\'"  . apache-mode))
-(add-to-list 'auto-mode-alist '("srm\\.conf\\'"    . apache-mode))
-(add-to-list 'auto-mode-alist '("access\\.conf\\'" . apache-mode))
-(add-to-list 'auto-mode-alist '("sites-\\(available\\|enabled\\)/" . apache-mode))
 
 ;; Magit
 (require 'magit)
@@ -248,12 +240,6 @@
 (defadvice moccur-edit-change-file
   (after save-after-moccur-edit-buffer activate)
   (save-buffer))
-
-;; ack grep find
-(defun ack ()
-  (interactive)
-  (let ((grep-find-command "ack --nocolor --nogroup "))
-    (call-interactively 'grep-find)))
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 
@@ -280,18 +266,6 @@
 (setq migemo-coding-system 'utf-8-unix)
 (load-library "migemo")
 (migemo-init)
-
-;; perl-completion
-(setq plcmp-buffer-dabbrev-expansions-number 0)
-(add-hook 'cperl-mode-hook
-          (lambda ()
-            (require 'perl-completion)
-            (perl-completion-mode t)
-            (define-key plcmp-mode-map "\C-\M-f" 'plcmp-builtin-function-complete)
-            (define-key plcmp-mode-map "\C-\M-v" 'plcmp-builtin-variables-complete)
-            (define-key plcmp-mode-map "\C-\M-u" 'plcmp-installed-modules-complete)
-            (define-key plcmp-mode-map "\C-\M-s" 'plcmp-search-word-at-point)
-            (define-key plcmp-mode-map "\C-\M-c" 'plcmp-clear-all-cache)))
 
 ;;; hippie-expand
 (global-set-key "\C-o" 'hippie-expand)
@@ -321,11 +295,6 @@
 
 (add-hook 'coffee-mode-hook
   '(lambda() (coffee-custom)))
-
-;; set-perl5lib
-;; http://svn.coderepos.org/share/lang/elisp/set-perl5lib/set-perl5lib.el
-(require 'set-perl5lib)
-
 
 ;; http://unknownplace.org/memo/2007/12/21#e001
 
@@ -366,17 +335,10 @@
              (local-set-key "@" 'js-doc-insert-tag)
              ))
 
-;; ruby-electric.el
-(require 'ruby-electric)
-(add-hook 'ruby-mode-hook '(lambda () (ruby-electric-mode t)))
 ;; ruby-block.el
 (require 'ruby-block)
 (ruby-block-mode t)
 (setq ruby-block-highlight-toggle t)
-
-;;Android mode
-(require 'android-mode)
-(setq android-mode-sdk-dir "~/android-sdks")
 
 ;; C-z new prefix key
 (global-unset-key (kbd "C-z"))
@@ -634,17 +596,12 @@
   (setq web-mode-block-padding 2)
   (add-hook 'web-mode-hook 'web-mode-hook))
 
-;; open-junk-file
-(require 'open-junk-file)
-(setq open-junk-file-format "~/Documents/junk/%Y-%m%d-%H%M%S.")
-(global-set-key "\C-xj" 'open-junk-file)
 
 ;; org
 (require 'org)
 (require 'ob-C)
 (require 'ob-ruby)
 
-(setq org-directory "~/Documents/junk")
 (setq org-agenda-files (list org-directory))
 
 (setq org-src-fontify-natively t)
@@ -728,39 +685,11 @@
 (require 'find-file-in-project)
 (global-set-key [(super shift i)] 'find-file-in-project)
 
-;; Org modeの設定
-
-; ファイルの場所
-(setq org-directory "/Volumes/GoogleDrive/マイドライブ")
-(setq org-default-notes-file "notes.org")
-; Org-captureの設定
-; Org-captureを呼び出すキーシーケンス
-(define-key global-map "\C-cc" 'org-capture)
-; Org-captureのテンプレート（メニュー）の設定
-(setq org-capture-templates
-      '(("n" "Note" entry (file+headline "/Volumes/GoogleDrive/マイドライブ/notes.org" "Notes")
-         "* %?\nEntered on %U\n %i\n %a")
-        ))
-
-; メモをC-M-^一発で見るための設定
-; https://qiita.com/takaxp/items/0b717ad1d0488b74429d から拝借
-(defun show-org-buffer (file)
-  "Show an org-file FILE on the current buffer."
-  (interactive)
-  (if (get-buffer file)
-      (let ((buffer (get-buffer file)))
-        (switch-to-buffer buffer)
-        (message "%s" file))
-    (find-file (concat "/Volumes/GoogleDrive/マイドライブ/" file))))
-(global-set-key (kbd "C-M-^") '(lambda () (interactive)
-                                 (show-org-buffer "notes.org")))
-
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 ;; enable typescript-tslint checker
 (flycheck-add-mode 'typescript-tslint 'web-mode)
-
 
 (eval-after-load 'js-mode
   '(add-hook 'js-mode-hook #'add-node-modules-path))
