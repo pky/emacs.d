@@ -902,8 +902,8 @@
 (put 'upcase-region 'disabled nil)
 
 ;; cask
-(require 'cask "/usr/local/opt/cask/cask.el")
-(cask-initialize)
+;;(require 'cask "/usr/local/opt/cask/cask.el")
+;;(cask-initialize)
 
 ;; typescript
 (require 'typescript-mode)
