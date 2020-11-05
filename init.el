@@ -62,7 +62,7 @@
  nil 'japanese-jisx0208
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
-      '((".*MigMix 1M.*" . 1.2)))
+      '((".*MigMix 1M.*" . 1.0)))
 
 ;; frame size
 ;;(set-frame-height (next-frame) 115)
