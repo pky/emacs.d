@@ -217,7 +217,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide ng2-mode find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;; Magit
@@ -325,6 +325,7 @@
 
 ;; js tide
 (add-hook 'js2-mode-hook #'setup-tide-mode)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;;js-doc
 (require 'js-doc)
@@ -629,7 +630,8 @@
 (require 'markdown-mode)
 
 ;; angular js ng2-mode
-(require 'ng2-mode)
+;;(require 'ng2-mode)
+;;(with-eval-after-load 'typescript-mode (add-hook 'typescript-mode-hook #'lsp))
 
 ;; counsel
 (ivy-mode 1) ;; デフォルトの入力補完がivyになる
@@ -688,8 +690,12 @@
 (global-flycheck-mode)
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
-;; enable typescript-tslint checker
-(flycheck-add-mode 'typescript-tslint 'web-mode)
+(flycheck-add-mode 'javascript-eslint 'typescript-mode)
+;; (with-eval-after-load 'tide
+;;   (flycheck-add-mode 'typescript-tslint 'ng2-ts-mode)
+;;   (flycheck-add-mode 'typescript-tide 'ng2-ts-mode)
+;; )
+
 
 (eval-after-load 'js-mode
   '(add-hook 'js-mode-hook #'add-node-modules-path))
@@ -753,6 +759,9 @@
 ;; typescript
 (require 'typescript-mode)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+;;(add-to-list 'auto-mode-alist '("\\.ts\\'" . ng2-ts-mode))
+
+
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -767,7 +776,7 @@
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 ;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;;(add-hook 'before-save-hook 'tide-format-before-save)
 
 ;; jsx
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
@@ -775,8 +784,6 @@
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-;; configure jsx-tide checker to run after your default jsx checker
-(flycheck-add-mode 'javascript-eslint 'web-mode)
 
 (defun vue-mode/init-vue-mode ()
   "Initialize my package"
