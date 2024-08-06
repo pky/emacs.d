@@ -1,0 +1,17 @@
+(define-package "helm-migemo" "20151010.356" "Migemo plug-in for helm"
+  '((emacs "24.4")
+    (helm-core "1.7.8")
+    (migemo "1.9")
+    (cl-lib "0.5"))
+  :commit "66c6a19d07c6a385daefd2090d0709d26b608b4e" :authors
+  '(("rubikitch" . "rubikitch@ruby-lang.org"))
+  :maintainers
+  '(("Yuhei Maeda <yuhei.maeda_at_gmail.com>"))
+  :maintainer
+  '("Yuhei Maeda <yuhei.maeda_at_gmail.com>")
+  :keywords
+  '("matching" "convenience" "tools" "i18n")
+  :url "https://github.com/emacs-jp/helm-migemo")
+;; Local Variables:
+;; no-byte-compile: t
+;; End:

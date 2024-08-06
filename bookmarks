@@ -1,0 +1,20 @@
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*- 
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("org-capture-last-stored-marker"
+ (filename . "/Volumes/GoogleDrive/マイドライブ/notes.org")
+ (front-context-string . "** \n\n Entered on")
+ (rear-context-string . "E%9A][30画面を想定]]\n")
+ (position . 40661))
+("org-refile-last-stored"
+ (filename . "/Volumes/GoogleDrive/マイドライブ/notes.org")
+ (front-context-string . "** \n\n Entered on")
+ (rear-context-string . "E%9A][30画面を想定]]\n")
+ (position . 40661))
+("org-capture-last-stored"
+ (filename . "/Volumes/GoogleDrive/マイドライブ/notes.org")
+ (front-context-string . "** \n\n Entered on")
+ (rear-context-string . "E%9A][30画面を想定]]\n")
+ (position . 40463))
+)

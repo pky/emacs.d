@@ -1,0 +1,14 @@
+(define-package "browse-url-dwim" "20140731.1922" "Context-sensitive external browse URL or Internet search"
+  '((string-utils "0.3.2"))
+  :commit "11f1c53126619c7ef1bb5f5d6914ce0b3cce0e30" :authors
+  '(("Roland Walker" . "walker@pobox.com"))
+  :maintainers
+  '(("Roland Walker" . "walker@pobox.com"))
+  :maintainer
+  '("Roland Walker" . "walker@pobox.com")
+  :keywords
+  '("hypermedia")
+  :url "http://github.com/rolandwalker/browse-url-dwim")
+;; Local Variables:
+;; no-byte-compile: t
+;; End:
