@@ -1,4 +1,3 @@
-
 ;;; Code:
 (require 'package)
 
@@ -30,6 +29,36 @@
   )
  )
 
+
+
+(defun set-frame-size-to-left-half ()
+  (interactive)
+  (let* ((display-attrs (car (display-monitor-attributes-list)))
+         (workarea (alist-get 'workarea display-attrs))
+         (width (- (nth 2 workarea) (nth 0 workarea)))
+         (height (- (nth 3 workarea) (nth 1 workarea)))
+         (frame-width (floor (* 0.495 width)))
+         (frame-height height))
+    (set-frame-position (selected-frame) 0 0)
+    (set-frame-size (selected-frame) 
+                    (floor (* 0.495 (/ width (frame-char-width))))
+                    (floor (/ height (frame-char-height)))
+                    nil)))
+
+;; 起動時にフレームサイズを設定
+(add-hook 'window-setup-hook 'set-frame-size-to-left-half)
+(add-hook 'after-init-hook 'set-frame-size-to-left-half)
+(run-with-idle-timer 0.5 nil 'set-frame-size-to-left-half)
+(run-with-idle-timer 1.0 nil 'set-frame-size-to-left-half)
+
+;; 既存のdefault-frame-alistとinitial-frame-alistの設定を無効化
+(setq default-frame-alist nil)
+(setq initial-frame-alist nil)
+
+
+;; フルスクリーンモードを無効化（必要な場合）
+;;(setq initial-frame-alist '((fullscreen . nil)))
+
 (add-hook 'emacs-startup-hook
           (function (lambda ()
                       (auto-list 'load-path "~/.emacs.d/elpa")
@@ -56,33 +85,35 @@
  ;; 英語
  (set-face-attribute 'default nil
              :family "Andale Mono"
-             :height 110)
+             :height 120)
 ;; 日本語
 (set-fontset-font
  nil 'japanese-jisx0208
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
-      '((".*MigMix 1M.*" . 1.0)))
+      '((".*MigMix 1M.*" . 1.1)))
 
 ;; frame size
 ;;(set-frame-height (next-frame) 115)
 ;;(set-frame-width (next-frame) 138)
 ))
 
-(setq default-frame-alist
-      (append '((width                . 140)  ; フレーム幅
-                (height               . 80 ) ; フレーム高
-                (left                 . 0 ) ; 配置左位置
-                (top                  . 0 ) ; 配置上位置
-                (line-spacing         . 0  ) ; 文字間隔
-                (left-fringe          . 12 ) ; 左フリンジ幅
-                (right-fringe         . 12 ) ; 右フリンジ幅
-                (menu-bar-lines       . 1  ) ; メニューバー
-                (cursor-type          . box) ; カーソル種別
-                (alpha                . 90) ; 透明度
-                )
-              default-frame-alist))
-(setq initial-frame-alist default-frame-alist)
+
+
+;; (setq default-frame-alist
+;;       (append '((width                . 140)  ; フレーム幅
+;;                 (height               . 80 ) ; フレーム高
+;;                 (left                 . 0 ) ; 配置左位置
+;;                 (top                  . 0 ) ; 配置上位置
+;;                 (line-spacing         . 0  ) ; 文字間隔
+;;                 (left-fringe          . 12 ) ; 左フリンジ幅
+;;                 (right-fringe         . 12 ) ; 右フリンジ幅
+;;                 (menu-bar-lines       . 1  ) ; メニューバー
+;;                 (cursor-type          . box) ; カーソル種別
+;;                 (alpha                . 90) ; 透明度
+;;                 )
+;;               default-frame-alist))
+;; (setq initial-frame-alist default-frame-alist)
 
 ;;GUIで起動するときはサーバーも起動するようにする．
 (if window-system (progn
@@ -287,7 +318,7 @@
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-(add-to-list 'default-frame-alist '(font . "fontset-default"))
+;;(add-to-list 'default-frame-alist '(font . "fontset-default"))
 ;;tramp
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
@@ -803,6 +834,168 @@
   "Initialize my package"
   (use-package vue-mode))
 
+;;C-c t: 今日の日付のtodoファイルを作成・開く
+;;C-c i: 全体のインデックスファイルを作成・更新
+;;C-c o: 指定した日付のtodoファイルを開く
+;;C-c a: 完了したタスク（DONE）をアーカイブ
+;;C-c A: 古いTODO TODAYタスクをアーカイブ
+
+;; org-todo設定
+(require 'org)
+(require 'org-agenda)
+
+;; todoファイルの保存先
+(setq org-todo-dir "~/Documents/org/todo")
+(setq org-archive-dir "~/Documents/org/todo/archive")
+
+;; 日付フォーマット
+(setq org-todo-date-format "%Y%m%d")
+
+;; アーカイブディレクトリの作成
+(unless (file-exists-p org-archive-dir)
+  (make-directory org-archive-dir t))
+
+;; 前日のTODO TODAYの内容を取得する関数
+(defun get-yesterday-todo-today ()
+  (let* ((today (format-time-string org-todo-date-format))
+         (files (directory-files org-todo-dir t "todo_.*\\.org$"))
+         (content nil)
+         (latest-date nil)
+         (debug-file (concat org-todo-dir "/debug.log")))
+    (with-temp-file debug-file
+      (insert (format "Debug information for %s\n\n" (current-time-string)))
+      (insert (format "Today's date: %s\n" today))
+      (insert (format "Found files: %s\n" files))
+      (dolist (file files)
+        (let ((date (file-name-base file)))
+          (insert (format "Checking file: %s\n" date))
+          (when (and (string-match "todo_\\([0-9]\\{8\\}\\)" date)
+                     (let ((file-date (match-string 1 date)))
+                       (insert (format "File date: %s\n" file-date))
+                       (and (string< file-date today)
+                            (or (null latest-date)
+                                (string< latest-date file-date)))))
+            (setq latest-date (match-string 1 date))
+            (insert (format "New latest date: %s\n" latest-date)))))
+      (when latest-date
+        (let ((latest-file (concat org-todo-dir "/todo_" latest-date ".org")))
+          (insert (format "Latest file: %s\n" latest-file))
+          (when (file-exists-p latest-file)
+            (with-temp-buffer
+              (insert-file-contents latest-file)
+              (goto-char (point-min))
+              (if (re-search-forward "^\\* TODO TODAY" nil t)
+                  (progn
+                    (forward-line)
+                    (setq content (buffer-substring-no-properties (point) (point-max)))
+                    (insert (format "\nFound content:\n%s\n" content)))
+                (insert "\nTODO TODAY not found\n")))))))
+    content))
+
+;; アーカイブファイル名を生成する関数
+(defun get-archive-filename (date)
+  (concat org-archive-dir "/archive_" date ".org"))
+
+;; アーカイブファイルを作成する関数
+(defun create-archive-file (date)
+  (let ((filename (get-archive-filename date)))
+    (unless (file-exists-p filename)
+      (with-temp-file filename
+        (insert (format "#+TITLE: Archive %s\n\n" date))
+        (insert "* DONE\n\n")
+        (insert "* OLD TODO TODAY\n\n")))
+    filename))
+
+;; 新しいtodoファイルを作成する関数
+(defun create-todo-file ()
+  (interactive)
+  (let* ((today (format-time-string org-todo-date-format))
+         (filename (concat org-todo-dir "/todo_" today ".org"))
+         (yesterday-todo (get-yesterday-todo-today)))
+    (unless (file-exists-p filename)
+      (with-temp-file filename
+        (insert (format "#+TITLE: Todo %s\n\n" today))
+        (insert "* TODO\n\n")
+        (insert "* DONE\n\n")
+        (insert "* SOMEDAY\n\n")
+        (insert "* TODO TODAY\n")
+        (when yesterday-todo
+          (insert yesterday-todo))
+        (insert "\n")))
+    (find-file filename)))
+
+;; 全体のインデックスファイルを作成する関数
+(defun create-todo-index ()
+  (interactive)
+  (let ((index-file (concat org-todo-dir "/index.org")))
+    (with-temp-file index-file
+      (insert "#+TITLE: Todo Index\n\n")
+      (insert "* Todo Files\n\n")
+      (dolist (file (directory-files org-todo-dir t "todo_.*\\.org$"))
+        (let ((date (file-name-base file)))
+          (insert (format "[[file:%s][%s]]\n" file date)))))))
+
+;; 日付ごとのtodoファイルを開くコマンド
+(defun open-todo-file (date)
+  (interactive "sEnter date (YYYYMMDD): ")
+  (let ((filename (concat org-todo-dir "/todo_" date ".org")))
+    (if (file-exists-p filename)
+        (find-file filename)
+      (message "File not found: %s" filename))))
+
+;; 完了したタスクをアーカイブする関数
+(defun archive-done-tasks ()
+  (interactive)
+  (let* ((today (format-time-string org-todo-date-format))
+         (archive-file (create-archive-file today))
+         (current-file (buffer-file-name)))
+    (when (and current-file (string-match "todo_.*\\.org$" current-file))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "\\* DONE \\(.*\\)" nil t)
+          (let ((task (match-string 1)))
+            (with-temp-buffer
+              (insert-file-contents archive-file)
+              (goto-char (point-min))
+              (re-search-forward "\\* DONE")
+              (forward-line)
+              (insert (format "- %s\n" task))
+              (write-file archive-file))
+            (delete-region (match-beginning 0) (match-end 0))))))))
+
+;; 古いTODO TODAYタスクをアーカイブする関数
+(defun archive-old-todo-today ()
+  (interactive)
+  (let* ((today (format-time-string org-todo-date-format))
+         (archive-file (create-archive-file today))
+         (current-file (buffer-file-name)))
+    (when (and current-file (string-match "todo_.*\\.org$" current-file))
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward "\\* TODO TODAY\n\\(.*?\\)\\* " nil t)
+          (let ((content (match-string 1)))
+            (when (and content (not (string= content "")))
+              (with-temp-buffer
+                (insert-file-contents archive-file)
+                (goto-char (point-min))
+                (re-search-forward "\\* OLD TODO TODAY")
+                (forward-line)
+                (insert content)
+                (write-file archive-file))
+              (delete-region (match-beginning 0) (match-end 0))
+              (message "TODO TODAY tasks archived successfully"))))))))
+
+;; キーバインドの設定
+(global-set-key (kbd "C-c t") 'create-todo-file)
+(global-set-key (kbd "C-c i") 'create-todo-index)
+(global-set-key (kbd "C-c o") 'open-todo-file)
+(global-set-key (kbd "C-c a") 'archive-done-tasks)
+(global-set-key (kbd "C-c A") 'archive-old-todo-today)
+
+;; 全体の検索用のagenda設定
+(setq org-agenda-files (append
+                       (directory-files org-todo-dir t "todo_.*\\.org$")
+                       (directory-files org-archive-dir t "archive_.*\\.org$")))
 
 ;; Local Variables:
 ;; indent-tabs-mode: nil
