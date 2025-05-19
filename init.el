@@ -997,6 +997,18 @@
                        (directory-files org-todo-dir t "todo_.*\\.org$")
                        (directory-files org-archive-dir t "archive_.*\\.org$")))
 
+;; org-agendaの設定
+(setq org-agenda-custom-commands
+      '(("s" "検索" search ""
+         ((org-agenda-text-search-extra-files
+           (directory-files org-todo-dir t "todo_.*\\.org$"))
+          (org-agenda-files
+           (directory-files org-archive-dir t "archive_.*\\.org$"))))))
+
+;; キーバインドの設定
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c s") 'org-agenda-search)
+
 ;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; End:
