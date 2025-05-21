@@ -855,7 +855,7 @@
 (unless (file-exists-p org-archive-dir)
   (make-directory org-archive-dir t))
 
-;; 前日のTODO TODAYの内容を取得する関数
+;; 前日のタスクを取得する関数
 (defun get-yesterday-todo-today ()
   (let* ((today (format-time-string org-todo-date-format))
          (files (directory-files org-todo-dir t "todo_.*\\.org$"))
@@ -884,12 +884,19 @@
             (with-temp-buffer
               (insert-file-contents latest-file)
               (goto-char (point-min))
-              (if (re-search-forward "^\\* TODO TODAY" nil t)
-                  (progn
-                    (forward-line)
-                    (setq content (buffer-substring-no-properties (point) (point-max)))
-                    (insert (format "\nFound content:\n%s\n" content)))
-                (insert "\nTODO TODAY not found\n")))))))
+              ;; タイトル行をスキップ
+              (when (re-search-forward "^#\\+TITLE:.*\n" nil t)
+                (forward-line))
+              ;; 空行をスキップ
+              (while (looking-at "^$")
+                (forward-line))
+              ;; すべてのタスクを取得（DONE以外）
+              (while (re-search-forward "^\\* \\(TODO\\|SOMEDAY\\|TODO TODAY\\)" nil t)
+                (let ((start (match-beginning 0))
+                      (end (or (re-search-forward "^\\* " nil t) (point-max))))
+                  (setq content (concat content (buffer-substring-no-properties start end) "\n")))
+                (goto-char (match-end 0)))
+              (insert (format "\nExtracted content:\n%s\n" content)))))))
     content))
 
 ;; アーカイブファイル名を生成する関数
@@ -915,13 +922,8 @@
     (unless (file-exists-p filename)
       (with-temp-file filename
         (insert (format "#+TITLE: Todo %s\n\n" today))
-        (insert "* TODO\n\n")
-        (insert "* DONE\n\n")
-        (insert "* SOMEDAY\n\n")
-        (insert "* TODO TODAY\n")
         (when yesterday-todo
-          (insert yesterday-todo))
-        (insert "\n")))
+          (insert yesterday-todo))))
     (find-file filename)))
 
 ;; 全体のインデックスファイルを作成する関数
