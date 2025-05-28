@@ -635,34 +635,6 @@
   (setq web-mode-block-padding 2)
   (add-hook 'web-mode-hook 'web-mode-hook))
 
-
-;; org
-(require 'org)
-(require 'ob-C)
-(require 'ob-ruby)
-(setq org-directory (expand-file-name "~/Documents/org/"))
-(setq org-agenda-files '("~/Documents/org"))
-;;(setq org-agenda-files (list org-directory))
-(setq org-src-fontify-natively t)
-(defun my-org-confirm-babel-evaluate (lang body)
-  (not (or (string= lang "ditaa")
-           (string= lang "emacs-lisp")
-           (string= lang "ruby")
-           (string= lang "C")
-           (string= lang "cpp")
-           )))
-(setq todo-hide-conditions '("status:done"))
-(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
-
-;; TODO状態
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "SOMEDAY(s)")))
-;; DONEの時刻を記録
-(setq org-log-done 'time)
-
-
-
-
 ;; git-complete
 
 (require 'git-complete)
@@ -840,68 +812,49 @@
 ;;C-c a: 完了したタスク（DONE）をアーカイブ
 ;;C-c A: 古いTODO TODAYタスクをアーカイブ
 
-;; org-todo設定
+;; org
 (require 'org)
+(require 'ob-C)
+(require 'ob-ruby)
+(setq org-directory (expand-file-name "~/Documents/org/"))
+(setq org-agenda-files (append
+                       (list (concat org-directory "todo.org"))
+                       (directory-files org-directory t "todo_.*\\.org$")))
+(setq org-src-fontify-natively t)
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (or (string= lang "ditaa")
+           (string= lang "emacs-lisp")
+           (string= lang "ruby")
+           (string= lang "C")
+           (string= lang "cpp")
+           )))
+(setq todo-hide-conditions '("status:done"))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; org-todo設定
 (require 'org-agenda)
 
-;; todoファイルの保存先
-(setq org-todo-dir "~/Documents/org/todo")
-(setq org-archive-dir "~/Documents/org/todo/archive")
+;; TODOキーワード設定
+(setq org-todo-keywords
+  '((sequence "TODO(t)" "DOIN(n)" "WAIT(w)" "SOMEDAY(s)" "REMD(r)"
+       "|" "DONE(d)" "SKIP(x)")))
+(setq org-todo-keyword-faces
+  '(
+    ("WAIT"  . (:foreground "CadetBlue3"      :weight bold))
+    ("TODO"  . (:foreground "LightGoldenrod3" :weight bold))
+    ("REMD"  . (:foreground "PaleGreen3"      :weight bold))
+    ("SOMEDAY"  . (:foreground "dark gray"       :weight bold))
+    ))
 
-;; 日付フォーマット
-(setq org-todo-date-format "%Y%m%d")
+;; DONEとなった時間を記録しない
+(setq org-log-done nil)
 
-;; アーカイブディレクトリの作成
-(unless (file-exists-p org-archive-dir)
-  (make-directory org-archive-dir t))
-
-;; 前日のタスクを取得する関数
-(defun get-yesterday-todo-today ()
-  (let* ((today (format-time-string org-todo-date-format))
-         (files (directory-files org-todo-dir t "todo_.*\\.org$"))
-         (content nil)
-         (latest-date nil)
-         (debug-file (concat org-todo-dir "/debug.log")))
-    (with-temp-file debug-file
-      (insert (format "Debug information for %s\n\n" (current-time-string)))
-      (insert (format "Today's date: %s\n" today))
-      (insert (format "Found files: %s\n" files))
-      (dolist (file files)
-        (let ((date (file-name-base file)))
-          (insert (format "Checking file: %s\n" date))
-          (when (and (string-match "todo_\\([0-9]\\{8\\}\\)" date)
-                     (let ((file-date (match-string 1 date)))
-                       (insert (format "File date: %s\n" file-date))
-                       (and (string< file-date today)
-                            (or (null latest-date)
-                                (string< latest-date file-date)))))
-            (setq latest-date (match-string 1 date))
-            (insert (format "New latest date: %s\n" latest-date)))))
-      (when latest-date
-        (let ((latest-file (concat org-todo-dir "/todo_" latest-date ".org")))
-          (insert (format "Latest file: %s\n" latest-file))
-          (when (file-exists-p latest-file)
-            (with-temp-buffer
-              (insert-file-contents latest-file)
-              (goto-char (point-min))
-              ;; タイトル行をスキップ
-              (when (re-search-forward "^#\\+TITLE:.*\n" nil t)
-                (forward-line))
-              ;; 空行をスキップ
-              (while (looking-at "^$")
-                (forward-line))
-              ;; すべてのタスクを取得（DONE以外）
-              (while (re-search-forward "^\\* \\(TODO\\|SOMEDAY\\|TODO TODAY\\)" nil t)
-                (let ((start (match-beginning 0))
-                      (end (or (re-search-forward "^\\* " nil t) (point-max))))
-                  (setq content (concat content (buffer-substring-no-properties start end) "\n")))
-                (goto-char (match-end 0)))
-              (insert (format "\nExtracted content:\n%s\n" content)))))))
-    content))
+;; DONEステータス時の見出しの色を変えない
+(setq org-fontify-done-headline nil)
 
 ;; アーカイブファイル名を生成する関数
 (defun get-archive-filename (date)
-  (concat org-archive-dir "/archive_" date ".org"))
+  (concat org-directory "archive_" date ".org"))
 
 ;; アーカイブファイルを作成する関数
 (defun create-archive-file (date)
@@ -909,110 +862,50 @@
     (unless (file-exists-p filename)
       (with-temp-file filename
         (insert (format "#+TITLE: Archive %s\n\n" date))
-        (insert "* DONE\n\n")
-        (insert "* OLD TODO TODAY\n\n")))
+        (insert "* DONE\n\n")))
     filename))
-
-;; 新しいtodoファイルを作成する関数
-(defun create-todo-file ()
-  (interactive)
-  (let* ((today (format-time-string org-todo-date-format))
-         (filename (concat org-todo-dir "/todo_" today ".org"))
-         (yesterday-todo (get-yesterday-todo-today)))
-    (unless (file-exists-p filename)
-      (with-temp-file filename
-        (insert (format "#+TITLE: Todo %s\n\n" today))
-        (when yesterday-todo
-          (insert yesterday-todo))))
-    (find-file filename)))
-
-;; 全体のインデックスファイルを作成する関数
-(defun create-todo-index ()
-  (interactive)
-  (let ((index-file (concat org-todo-dir "/index.org")))
-    (with-temp-file index-file
-      (insert "#+TITLE: Todo Index\n\n")
-      (insert "* Todo Files\n\n")
-      (dolist (file (directory-files org-todo-dir t "todo_.*\\.org$"))
-        (let ((date (file-name-base file)))
-          (insert (format "[[file:%s][%s]]\n" file date)))))))
-
-;; 日付ごとのtodoファイルを開くコマンド
-(defun open-todo-file (date)
-  (interactive "sEnter date (YYYYMMDD): ")
-  (let ((filename (concat org-todo-dir "/todo_" date ".org")))
-    (if (file-exists-p filename)
-        (find-file filename)
-      (message "File not found: %s" filename))))
 
 ;; 完了したタスクをアーカイブする関数
 (defun archive-done-tasks ()
   (interactive)
-  (let* ((today (format-time-string org-todo-date-format))
+  (let* ((today (format-time-string "%Y%m%d"))
          (archive-file (create-archive-file today))
          (current-file (buffer-file-name)))
-    (when (and current-file (string-match "todo_.*\\.org$" current-file))
+    (when (and current-file 
+               (or (string= current-file (concat org-directory "todo.org"))
+                   (string-match "todo_.*\\.org$" current-file)))
       (save-excursion
         (goto-char (point-min))
-        (while (re-search-forward "\\* DONE \\(.*\\)" nil t)
-          (let ((task (match-string 1)))
-            (with-temp-buffer
-              (insert-file-contents archive-file)
-              (goto-char (point-min))
-              (re-search-forward "\\* DONE")
-              (forward-line)
-              (insert (format "- %s\n" task))
-              (write-file archive-file))
-            (delete-region (match-beginning 0) (match-end 0))))))))
-
-;; 古いTODO TODAYタスクをアーカイブする関数
-(defun archive-old-todo-today ()
-  (interactive)
-  (let* ((today (format-time-string org-todo-date-format))
-         (archive-file (create-archive-file today))
-         (current-file (buffer-file-name)))
-    (when (and current-file (string-match "todo_.*\\.org$" current-file))
-      (save-excursion
-        (goto-char (point-min))
-        (when (re-search-forward "\\* TODO TODAY\n\\(.*?\\)\\* " nil t)
-          (let ((content (match-string 1)))
-            (when (and content (not (string= content "")))
+        (while (re-search-forward "^\\* DONE " nil t)
+          (let* ((task-start (match-beginning 0))
+                 (next-task-start (save-excursion
+                                  (forward-line)
+                                  (re-search-forward "^\\* " nil t)
+                                  (match-beginning 0)))
+                 (task-end (if next-task-start
+                              next-task-start
+                            (point-max)))
+                 (task-content (buffer-substring-no-properties task-start task-end)))
+            (when task-start
               (with-temp-buffer
                 (insert-file-contents archive-file)
                 (goto-char (point-min))
-                (re-search-forward "\\* OLD TODO TODAY")
+                (re-search-forward "\\* DONE")
                 (forward-line)
-                (insert content)
+                (insert task-content)
                 (write-file archive-file))
-              (delete-region (match-beginning 0) (match-end 0))
-              (message "TODO TODAY tasks archived successfully"))))))))
-
-;; キーバインドの設定
-(global-set-key (kbd "C-c t") 'create-todo-file)
-(global-set-key (kbd "C-c i") 'create-todo-index)
-(global-set-key (kbd "C-c o") 'open-todo-file)
-(global-set-key (kbd "C-c a") 'archive-done-tasks)
-(global-set-key (kbd "C-c A") 'archive-old-todo-today)
-
-;; 全体の検索用のagenda設定
-(setq org-agenda-files (append
-                       (directory-files org-todo-dir t "todo_.*\\.org$")
-                       (directory-files org-archive-dir t "archive_.*\\.org$")))
+              (delete-region task-start task-end)
+              (save-buffer))))))))
 
 ;; org-agendaの設定
 (setq org-agenda-custom-commands
       '(("s" "検索" search ""
          ((org-agenda-text-search-extra-files
-           (directory-files org-todo-dir t "todo_.*\\.org$"))
+           (directory-files org-directory t "todo_.*\\.org$"))
           (org-agenda-files
-           (directory-files org-archive-dir t "archive_.*\\.org$"))))))
+           (directory-files org-directory t "archive_.*\\.org$"))))))
 
-;; キーバインドの設定
+;; キーバインドの設定（最後にまとめて設定）
 (global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c A") 'archive-done-tasks)
 (global-set-key (kbd "C-c s") 'org-agenda-search)
-
-;; Local Variables:
-;; indent-tabs-mode: nil
-;; End:
-
-;;; init.el ends here
