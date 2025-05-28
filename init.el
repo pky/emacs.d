@@ -854,7 +854,10 @@
 
 ;; アーカイブファイル名を生成する関数
 (defun get-archive-filename (date)
-  (concat org-directory "archive_" date ".org"))
+  (let ((archive-dir (concat org-directory "archive/")))
+    (unless (file-exists-p archive-dir)
+      (make-directory archive-dir t))
+    (concat archive-dir "archive_" date ".org")))
 
 ;; アーカイブファイルを作成する関数
 (defun create-archive-file (date)
