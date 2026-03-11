@@ -1,10 +1,11 @@
 auto-save-list/*
+eln-cache/
+tramp
 recentf
 ac-comphist.dat
 elscreen
 .emacs.destop
 place
-elpa/archives
-elpa/archives/*
+elpa/
 .cask/*
 
