@@ -56,13 +56,13 @@
  ;; 英語
  (set-face-attribute 'default nil
              :family "Andale Mono"
-             :height 110)
+             :height 130)
 ;; 日本語
 (set-fontset-font
  nil 'japanese-jisx0208
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
-      '((".*MigMix 1M.*" . 1.0)))
+      '((".*MigMix 1M.*" . 1.3)))
 
 ;; frame size
 ;;(set-frame-height (next-frame) 115)
@@ -211,13 +211,13 @@
  '(helm-ls-git-show-abs-or-relative 'relative)
  '(helm-mini-default-sources
    '(helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf))
- '(helm-truncate-lines t t)
+ '(helm-truncate-lines t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;; Magit
@@ -255,11 +255,13 @@
 
 ;; migemo
 (require 'migemo)
-(setq migemo-command "cmigemo")
+(setq migemo-command "/opt/homebrew/bin/cmigemo")
+;;(setq migemo-command "cmigemo")
 (setq migemo-options '("-q" "--emacs"))
 
 ;; Set your installed path
-(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+(setq migemo-dictionary "/opt/homebrew/Cellar/cmigemo/20110227/share/migemo/utf-8/migemo-dict")
+;;(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
 
 (setq migemo-user-dictionary nil)
 (setq migemo-regex-dictionary nil)
@@ -392,7 +394,7 @@
 (load "~/.emacs.d/auto-install")
 (require 'auto-install)
 (setq auto-install-directory "~/.emacs.d/auto-install/")
-(auto-install-update-emacswiki-package-name t)
+;; (auto-install-update-emacswiki-package-name t) ; EMacswiki is no longer free (HTTP 402)
 (auto-install-compatibility-setup)
 
 (setq ac-js2-evaluate-calls t)
@@ -413,7 +415,7 @@
 (volatile-highlights-mode t)
 
 ;; helm
-(require 'helm-config)
+(require 'helm-core)
 (require 'helm-descbinds)
 (require 'helm-ag)
 (require 'helm-swoop)
@@ -784,6 +786,8 @@
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
+
+(setq with-editor-emacsclient-executable "/opt/homebrew/bin/emacsclient")
 
 (defun vue-mode/init-vue-mode ()
   "Initialize my package"
