@@ -100,9 +100,10 @@
 (setq process-coding-system-alist '(("svn" . utf-8)))
 (setq svn-status-svn-process-coding-system 'utf-8)
 
-(setq exec-path (cons "/usr/local/bin" exec-path))
-(setenv "PATH"
-   (concat '"/usr/local/bin:" (getenv "PATH")))
+;; Apple Silicon の Homebrew は /opt/homebrew。GUI 起動では PATH に入らないため明示する。
+(dolist (dir '("/usr/local/bin" "/opt/homebrew/bin"))
+  (add-to-list 'exec-path dir)
+  (setenv "PATH" (concat dir ":" (getenv "PATH"))))
 
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\e[3~" 'delete-char)
@@ -192,7 +193,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(doom-themes which-key tokyo-night-themekotlin-mode markdown-mode olivetti exec-path-from-shell vmd-mode grip-mode magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme multiple-cursors luilet-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(doom-themes which-key tokyo-night-themekotlin-mode markdown-mode olivetti exec-path-from-shell vmd-mode grip-mode magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode php-mode packed osx-browse org noctilux-theme multiple-cursors luilet-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe git-gutter fuzzy expand-region epc dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;; Magit
@@ -362,8 +363,7 @@
 (setq tab-width 2)
 
 ;; autopair
-(require 'autopair)
-(autopair-global-mode)
+(electric-pair-mode 1) ; 組み込み。autopair は MELPA から消えたため置き換え
 
 ;;volatile-highlights
 (require 'volatile-highlights)
@@ -455,29 +455,21 @@
  (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
  (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
 
-(global-git-gutter+-mode)
-(require 'git-gutter-fringe+)
-(git-gutter-fr+-minimal)
+;; git-gutter (git-gutter+ は MELPA から消えたため置き換え)
+(require 'git-gutter)
+(require 'git-gutter-fringe nil t) ; 未導入ならマージン表示になる
+(global-git-gutter-mode 1)
 
-(global-set-key (kbd "C-x g") 'git-gutter+-mode) ; Turn on/off in the current buffer
-(global-set-key (kbd "C-x G") 'global-git-gutter+-mode) ; Turn on/off globally
+(global-set-key (kbd "C-x g") 'git-gutter-mode) ; Turn on/off in the current buffer
+(global-set-key (kbd "C-x G") 'global-git-gutter-mode) ; Turn on/off globally
 
-(eval-after-load 'git-gutter+
-  '(progn
-     ;;; Jump between hunks
-     (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
-
-     ;;; Act on hunks
-     (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x r") 'git-gutter+-revert-hunks)
-     ;; Stage hunk at point.
-     ;; If region is active, stage all hunk lines within the region.
-     (define-key git-gutter+-mode-map (kbd "C-x t") 'git-gutter+-stage-hunks)
-     (define-key git-gutter+-mode-map (kbd "C-x c") 'git-gutter+-commit)
-     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit)
-     (define-key git-gutter+-mode-map (kbd "C-x C-y") 'git-gutter+-stage-and-commit-whole-buffer)
-     (define-key git-gutter+-mode-map (kbd "C-x U") 'git-gutter+-unstage-whole-buffer)))
+;; hunk間の移動と操作。コミット系は magit に任せる
+;; git-gutter にはキーマップがないため、標準の C-x n/p/r/t を潰さないよう C-x v 配下に置く
+(global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x v h") 'git-gutter:popup-hunk)
+(global-set-key (kbd "C-x v R") 'git-gutter:revert-hunk)
+(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
 
 ;;php-mode
 (require 'php-mode)
@@ -486,16 +478,12 @@
 ;; php-mode-hook
 (add-hook 'php-mode-hook
           (lambda ()
-            (require 'php-completion)
-            (php-completion-mode t)
             (setq tab-width 2)
             (setq indent-tabs-mode nil)
             (setq c-basic-offset 2)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) ;php-completionの補完実行キーバインドの設定
             (make-local-variable 'ac-sources)
             (setq ac-sources '(
                                ac-source-words-in-same-mode-buffers
-                               ac-source-php-completion
                                ac-source-filename
                                ))))
 
