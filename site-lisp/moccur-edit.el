@@ -304,6 +304,9 @@
   (interactive)
   (let ((ov) fileov beg filename text line local-buf cbuf line)
     (setq cbuf (current-buffer))
+    ;; ナローイングの外にある編集行にも移動できるよう、処理中だけ広げる
+    (save-restriction
+    (widen)
     (while moccur-edit-overlays
       (setq ov (car moccur-edit-overlays))
       (setq moccur-edit-overlays (cdr moccur-edit-overlays))
@@ -330,7 +333,7 @@
             (set-buffer cbuf)
             (moccur-edit-put-face 'moccur-edit-reject-face)))
         (delete-overlay ov)
-        )))
+        ))))
   (moccur-edit-reset-key))
 
 (defun moccur-edit-remove-change (beg end)
