@@ -7,4 +7,16 @@ place
 elpa/archives
 elpa/archives/*
 .cask/*
+elpa/
+eln-cache/
+*.eln.tmp
+*.bak
+.lsp-session-v1
+bookmarks
+projectile-bookmarks.eld
+smex-items
+tramp
+transient/history.el
+url/cookies
+network-security.data
 
