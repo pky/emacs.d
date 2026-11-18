@@ -230,4 +230,17 @@
       (should (equal (save-restriction (widen) (buffer-string))
                      "alpha\nX\ncharlie")))))
 
+(ert-deftest moccur-edit-change-file-counts-carriage-return-with-selective-display ()
+  (with-temp-buffer
+    (insert "head\rhidden\nmatch here\nneighbor\n")
+    (setq selective-display t)
+    (goto-char (point-min))
+    (re-search-forward "match here")
+    (let ((moccur-edit-line (count-lines
+                             (save-restriction (widen) (point-min)) (point)))
+          (moccur-edit-text "MATCH"))
+      (should (= moccur-edit-line 3))
+      (moccur-edit-change-file)
+      (should (equal (buffer-string) "head\rhidden\nMATCH\nneighbor\n")))))
+
 ;;; moccur-edit-test.el ends here
