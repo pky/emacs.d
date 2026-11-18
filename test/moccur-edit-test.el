@@ -130,4 +130,38 @@
                     (should-not (<= line-b-start start line-b-end))))))))
       (kill-buffer target))))
 
+(ert-deftest moccur-edit-get-info-with-result-text-narrowed-out ()
+  (with-temp-buffer
+    (insert "Buffer: tgt File: /tmp/x\n     2 oriXginal")
+    (goto-char (point-min))
+    (forward-line 1)
+    (let ((narrowed-end (+ (point) (length "     2 ")))
+          (moccur-edit-buf nil)
+          (moccur-edit-line nil)
+          (moccur-edit-text nil))
+      (narrow-to-region (point-min) narrowed-end)
+      (moccur-edit-get-info)
+      (should (= (point-max) narrowed-end))
+      (should (equal moccur-edit-buf "tgt"))
+      (should (eql moccur-edit-line 2))
+      (should (equal moccur-edit-text "oriXginal")))))
+
+(ert-deftest moccur-edit-get-info-with-header-narrowed-out ()
+  (with-temp-buffer
+    (insert "Buffer: tgt File: /tmp/x\n     2 oriXginal")
+    (goto-char (point-min))
+    (forward-line 1)
+    (let ((narrowed-start (point))
+          (narrowed-end (point-max))
+          (moccur-edit-buf nil)
+          (moccur-edit-line nil)
+          (moccur-edit-text nil))
+      (narrow-to-region narrowed-start narrowed-end)
+      (moccur-edit-get-info)
+      (should (= (point-min) narrowed-start))
+      (should (= (point-max) narrowed-end))
+      (should (eql moccur-edit-line 2))
+      (should (equal moccur-edit-text "oriXginal"))
+      (should (equal moccur-edit-buf "tgt")))))
+
 ;;; moccur-edit-test.el ends here
