@@ -248,10 +248,14 @@
        (format "Buffer read only: %s" (current-buffer)))
       nil))
    (t
-    (goto-line moccur-edit-line)
-    (delete-region (line-beginning-position)
-                   (line-end-position))
-    (insert moccur-edit-text)
+    ;; 書き込み先の絞り込みに関係なく、ファイル全体の行番号で置き換える
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (forward-line (1- moccur-edit-line))
+      (delete-region (line-beginning-position)
+                     (line-end-position))
+      (insert moccur-edit-text))
     t)))
 
 (defun moccur-edit-put-color-file ()
