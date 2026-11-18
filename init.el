@@ -560,9 +560,7 @@
                             ;; 公式ドキュメントで確認された正しいコマンド
                             (markdown-toggle-markup-hiding)
                             ;; 可変幅フォントを有効にする
-                            (variable-pitch-mode 1)
-                            ;; 中央寄せを有効にする
-                            (olivetti-mode 1))))
+                            (variable-pitch-mode 1))))
   :config
   ;; ヘッダーの大きさをスケールさせる
   (setq markdown-header-scaling t))
