@@ -192,6 +192,7 @@
 (defvar moccur-edit-text "")
 
 (defun moccur-edit-get-info ()
+  (setq moccur-edit-buf nil)
   (save-excursion
     (beginning-of-line)
     (when (re-search-backward "^[-+ ]*Buffer:" nil t)
@@ -264,7 +265,7 @@
 (defun moccur-edit-put-face (face)
   (let ((ov))
     (beginning-of-line)
-    (re-search-forward "^[ ]*[0-9]+ " nil t)
+    (re-search-forward "^[ ]*[0-9]+ " (line-end-position) t)
     (setq ov (make-overlay (point) (line-end-position)))
     (overlay-put ov 'moccur-edit t)
     (overlay-put ov 'face face)
@@ -308,23 +309,23 @@
         (goto-char beg)
         (moccur-edit-get-info)
 
-        (if (and
-             (listp moccur-edit-buf)
-             (string= (car moccur-edit-buf) "grep"))
-            (set-buffer (find-file-noselect (cdr moccur-edit-buf)))
-          (set-buffer moccur-edit-buf))
-        ;; <WL: fixed a bug here>
-        (if (moccur-edit-change-file)
-            ;; File is changed. t: success
-            (progn
-              (when moccur-edit-highlight-edited-text
-                (moccur-edit-put-color-file)) ;; Highlight changed text
-              (set-buffer cbuf)
-              (moccur-edit-put-face 'moccur-edit-done-face))
-         (set-buffer cbuf)
-         (moccur-edit-put-face 'moccur-edit-reject-face))
-        ;; Return previous buffer
-        (set-buffer cbuf)
+        (if (or (null moccur-edit-buf) (not (integerp moccur-edit-line)))
+            (moccur-edit-put-face 'moccur-edit-reject-face)
+          (if (and
+               (listp moccur-edit-buf)
+               (string= (car moccur-edit-buf) "grep"))
+              (set-buffer (find-file-noselect (cdr moccur-edit-buf)))
+            (set-buffer moccur-edit-buf))
+          ;; <WL: fixed a bug here>
+          (if (moccur-edit-change-file)
+              ;; File is changed. t: success
+              (progn
+                (when moccur-edit-highlight-edited-text
+                  (moccur-edit-put-color-file)) ;; Highlight changed text
+                (set-buffer cbuf)
+                (moccur-edit-put-face 'moccur-edit-done-face))
+            (set-buffer cbuf)
+            (moccur-edit-put-face 'moccur-edit-reject-face)))
         (delete-overlay ov)
         )))
   (moccur-edit-reset-key))
