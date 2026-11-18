@@ -192,6 +192,10 @@
 (defvar moccur-edit-text "")
 
 (defun moccur-edit-get-info ()
+  (setq moccur-edit-buf nil)
+  ;; ナローイングで見出しや本文が隠れていても、バッファ全体から読む
+  (save-restriction
+  (widen)
   (save-excursion
     (beginning-of-line)
     (when (re-search-backward "^[-+ ]*Buffer:" nil t)
@@ -213,7 +217,9 @@
                                    (match-end 1)))))))
   (save-excursion
     (beginning-of-line)
-    (if (re-search-forward "^[ ]*\\([0-9]+\\) \\([^\n]+$\\)" (line-end-position) t)
+    (setq moccur-edit-line nil
+          moccur-edit-text nil)
+    (if (re-search-forward "^[ ]*\\([0-9]+\\) \\([^\n]*$\\)" (line-end-position) t)
         (progn
           (setq moccur-edit-line
                 (string-to-number (buffer-substring-no-properties
@@ -221,29 +227,32 @@
                                    (match-end 1))))
           (setq moccur-edit-text (buffer-substring-no-properties
                                   (match-beginning 2)
-                                  (match-end 2))))))
+                                  (match-end 2)))))))
   )
 
 (defun moccur-edit-change-file ()
   "*The changes on the moccur buffer apply to the file"
-  (if buffer-read-only
-      (if (and moccur-query-when-buffer-read-only
-               (buffer-file-name)
-               ;;(file-writable-p (buffer-file-name))
-               (y-or-n-p (format "Make buffer %s writable?"
-                                 (current-buffer)))
-               (or (toggle-read-only -1) t)
-               (not buffer-read-only))
-          (moccur-edit-change-file)
-        (display-warning             ; (Not defined in old Emacses! *)
-         'moccur-edit
-         (format "Buffer read only: %s" (current-buffer)))
-        nil)
+  (cond
+   ((not (integerp moccur-edit-line)) nil)
+   (buffer-read-only
+    (if (and moccur-query-when-buffer-read-only
+             (buffer-file-name)
+             ;;(file-writable-p (buffer-file-name))
+             (y-or-n-p (format "Make buffer %s writable?"
+                               (current-buffer)))
+             (or (toggle-read-only -1) t)
+             (not buffer-read-only))
+        (moccur-edit-change-file)
+      (display-warning             ; (Not defined in old Emacses! *)
+       'moccur-edit
+       (format "Buffer read only: %s" (current-buffer)))
+      nil))
+   (t
     (goto-line moccur-edit-line)
     (delete-region (line-beginning-position)
                    (line-end-position))
     (insert moccur-edit-text)
-    t))
+    t)))
 
 (defun moccur-edit-put-color-file ()
   "*Highlight the changed line of the file"
@@ -259,7 +268,7 @@
 (defun moccur-edit-put-face (face)
   (let ((ov))
     (beginning-of-line)
-    (re-search-forward "^[ ]*[0-9]+ " nil t)
+    (re-search-forward "^[ ]*[0-9]+ " (line-end-position) t)
     (setq ov (make-overlay (point) (line-end-position)))
     (overlay-put ov 'moccur-edit t)
     (overlay-put ov 'face face)
@@ -295,6 +304,9 @@
   (interactive)
   (let ((ov) fileov beg filename text line local-buf cbuf line)
     (setq cbuf (current-buffer))
+    ;; ナローイングの外にある編集行にも移動できるよう、処理中だけ広げる
+    (save-restriction
+    (widen)
     (while moccur-edit-overlays
       (setq ov (car moccur-edit-overlays))
       (setq moccur-edit-overlays (cdr moccur-edit-overlays))
@@ -303,25 +315,25 @@
         (goto-char beg)
         (moccur-edit-get-info)
 
-        (if (and
-             (listp moccur-edit-buf)
-             (string= (car moccur-edit-buf) "grep"))
-            (set-buffer (find-file-noselect (cdr moccur-edit-buf)))
-          (set-buffer moccur-edit-buf))
-        ;; <WL: fixed a bug here>
-        (if (moccur-edit-change-file)
-            ;; File is changed. t: success
-            (progn
-              (when moccur-edit-highlight-edited-text
-                (moccur-edit-put-color-file)) ;; Highlight changed text
-              (set-buffer cbuf)
-              (moccur-edit-put-face 'moccur-edit-done-face))
-         (set-buffer cbuf)
-         (moccur-edit-put-face 'moccur-edit-reject-face))
-        ;; Return previous buffer
-        (set-buffer cbuf)
+        (if (or (null moccur-edit-buf) (not (integerp moccur-edit-line)))
+            (moccur-edit-put-face 'moccur-edit-reject-face)
+          (if (and
+               (listp moccur-edit-buf)
+               (string= (car moccur-edit-buf) "grep"))
+              (set-buffer (find-file-noselect (cdr moccur-edit-buf)))
+            (set-buffer moccur-edit-buf))
+          ;; <WL: fixed a bug here>
+          (if (moccur-edit-change-file)
+              ;; File is changed. t: success
+              (progn
+                (when moccur-edit-highlight-edited-text
+                  (moccur-edit-put-color-file)) ;; Highlight changed text
+                (set-buffer cbuf)
+                (moccur-edit-put-face 'moccur-edit-done-face))
+            (set-buffer cbuf)
+            (moccur-edit-put-face 'moccur-edit-reject-face)))
         (delete-overlay ov)
-        )))
+        ))))
   (moccur-edit-reset-key))
 
 (defun moccur-edit-remove-change (beg end)

@@ -214,7 +214,8 @@
 ;; moccur-edit-finisi-edit and save
 (defadvice moccur-edit-change-file
   (after save-after-moccur-edit-buffer activate)
-  (save-buffer))
+  (when ad-return-value
+    (save-buffer)))
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 
