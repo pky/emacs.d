@@ -7,3 +7,11 @@ my .emacs.d
 - 一覧が古いと MELPA の旧版が削除済みで、インストールが失敗する。失敗したら package-refresh-contents をやり直す
 - init.el の package-selected-packages にあるパッケージが elpa/ に入る
 - 実行後に Emacs を再起動する
+
+MELPA から入らないパッケージ（helm-swoop, helm-ag, helm-migemo）
+- 一覧に出ない場合は GitHub から直接入れる（Emacs 29 以降の package-vc-install）
+- M-x package-vc-install RET https://github.com/emacsorphanage/helm-swoop RET
+- M-x package-vc-install RET https://github.com/emacsorphanage/helm-ag RET
+- M-x package-vc-install RET https://github.com/emacs-jp/helm-migemo RET
+- 入れる前に elpa/ をバックアップしておく（パッケージ操作の失敗で壊れることがある）
+- helm-migemo の URL は未確認。開けない場合は GitHub で名前を検索する
