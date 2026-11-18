@@ -1,5 +1,6 @@
 ;;; moccur-edit-test.el --- moccur-edit の回帰テスト -*- lexical-binding: t; -*-
 
+(require 'cl-lib)
 (require 'ert)
 (require 'moccur-edit)
 
@@ -60,5 +61,73 @@
           (moccur-edit-text nil))
       (should-not (moccur-edit-change-file))
       (should (equal (buffer-string) "a\nb\nc")))))
+
+(ert-deftest moccur-edit-get-info-clears-stale-buffer-without-header ()
+  (with-temp-buffer
+    (insert "     12 hello")
+    (let ((moccur-edit-buf "other.txt")
+          (moccur-edit-line nil)
+          (moccur-edit-text nil))
+      (moccur-edit-get-info)
+      (should-not moccur-edit-buf))))
+
+(ert-deftest moccur-edit-finish-edit-without-header-preserves-target ()
+  (let ((target (generate-new-buffer "moccur-edit-test-target")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target
+            (insert "a\nb\nc"))
+          (with-temp-buffer
+            (insert "     2 X")
+            (let ((moccur-edit-overlays (list (make-overlay (point-min) (point-max))))
+                  (moccur-edit-result-overlays nil)
+                  (moccur-edit-buf (buffer-name target))
+                  (moccur-edit-line 2)
+                  (moccur-edit-text "stale")
+                  (moccur-edit-highlight-edited-text nil))
+              (cl-letf (((symbol-function 'moccur-edit-reset-key) #'ignore))
+                (moccur-edit-finish-edit)))
+            (with-current-buffer target
+              (should (equal (buffer-string) "a\nb\nc")))))
+      (kill-buffer target))))
+
+(ert-deftest moccur-edit-finish-edit-rejects-only-unparsable-line ()
+  (let ((target (generate-new-buffer "moccur-edit-test-target")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target
+            (insert "a\nb\nc"))
+          (with-temp-buffer
+            (insert (format "Buffer: %s File: /tmp/x\n     1\n     2 b"
+                            (buffer-name target)))
+            (goto-char (point-min))
+            (forward-line 1)
+            (let* ((line-a-start (point))
+                   (line-a-end (line-end-position))
+                   (line-b-start (line-beginning-position 2))
+                   (line-b-end (line-end-position 2))
+                   (moccur-edit-overlays (list (make-overlay line-a-start line-a-end)))
+                   (moccur-edit-result-overlays nil)
+                   (moccur-edit-buf nil)
+                   (moccur-edit-line nil)
+                   (moccur-edit-text nil)
+                   (moccur-edit-highlight-edited-text nil))
+              (cl-letf (((symbol-function 'moccur-edit-reset-key) #'ignore))
+                (moccur-edit-finish-edit))
+              (with-current-buffer target
+                (should (equal (buffer-string) "a\nb\nc")))
+              (should (cl-some (lambda (overlay)
+                                 (eq (overlay-get overlay 'face)
+                                     'moccur-edit-reject-face))
+                               moccur-edit-result-overlays))
+              (dolist (overlay moccur-edit-result-overlays)
+                (let ((face (overlay-get overlay 'face))
+                      (start (overlay-start overlay))
+                      (end (overlay-end overlay)))
+                  (when (eq face 'moccur-edit-reject-face)
+                    (should (<= line-a-start start end line-a-end)))
+                  (when face
+                    (should-not (<= line-b-start start line-b-end))))))))
+      (kill-buffer target))))
 
 ;;; moccur-edit-test.el ends here
