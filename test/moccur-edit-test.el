@@ -164,4 +164,43 @@
       (should (equal moccur-edit-text "oriXginal"))
       (should (equal moccur-edit-buf "tgt")))))
 
+(ert-deftest moccur-edit-finish-edit-applies-overlay-outside-narrowing ()
+  (let ((target-a (generate-new-buffer "moccur-edit-test-target-a"))
+        (target-b (generate-new-buffer "moccur-edit-test-target-b")))
+    (unwind-protect
+        (progn
+          (with-current-buffer target-a
+            (insert "a\n")
+            (set-buffer-modified-p nil))
+          (with-current-buffer target-b
+            (insert "b\n")
+            (set-buffer-modified-p nil))
+          (with-temp-buffer
+            (insert (format "Buffer: %s File: /tmp/a\n     1 aX\n\nBuffer: %s File: /tmp/b\n     1 b\n"
+                            (buffer-name target-a) (buffer-name target-b)))
+            (goto-char (point-min))
+            (forward-line 1)
+            (let ((moccur-edit-overlays (list (make-overlay (point) (line-end-position))))
+                  (moccur-edit-result-overlays nil)
+                  (moccur-edit-buf nil)
+                  (moccur-edit-line nil)
+                  (moccur-edit-text nil)
+                  (moccur-edit-highlight-edited-text nil))
+              (forward-line 3)
+              (forward-char (length "     1 "))
+              (let ((narrowed-start (point))
+                    (narrowed-end (point-max)))
+                (narrow-to-region narrowed-start narrowed-end)
+                (cl-letf (((symbol-function 'moccur-edit-reset-key) #'ignore))
+                  (moccur-edit-finish-edit))
+                (with-current-buffer target-a
+                  (should (equal (buffer-string) "aX\n")))
+                (with-current-buffer target-b
+                  (should (equal (buffer-string) "b\n"))
+                  (should-not (buffer-modified-p)))
+                (should (= (point-min) narrowed-start))
+                (should (= (point-max) narrowed-end))))))
+      (kill-buffer target-a)
+      (kill-buffer target-b))))
+
 ;;; moccur-edit-test.el ends here
