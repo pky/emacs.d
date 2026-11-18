@@ -213,7 +213,9 @@
                                    (match-end 1)))))))
   (save-excursion
     (beginning-of-line)
-    (if (re-search-forward "^[ ]*\\([0-9]+\\) \\([^\n]+$\\)" (line-end-position) t)
+    (setq moccur-edit-line nil
+          moccur-edit-text nil)
+    (if (re-search-forward "^[ ]*\\([0-9]+\\) \\([^\n]*$\\)" (line-end-position) t)
         (progn
           (setq moccur-edit-line
                 (string-to-number (buffer-substring-no-properties
@@ -226,24 +228,27 @@
 
 (defun moccur-edit-change-file ()
   "*The changes on the moccur buffer apply to the file"
-  (if buffer-read-only
-      (if (and moccur-query-when-buffer-read-only
-               (buffer-file-name)
-               ;;(file-writable-p (buffer-file-name))
-               (y-or-n-p (format "Make buffer %s writable?"
-                                 (current-buffer)))
-               (or (toggle-read-only -1) t)
-               (not buffer-read-only))
-          (moccur-edit-change-file)
-        (display-warning             ; (Not defined in old Emacses! *)
-         'moccur-edit
-         (format "Buffer read only: %s" (current-buffer)))
-        nil)
+  (cond
+   ((not (integerp moccur-edit-line)) nil)
+   (buffer-read-only
+    (if (and moccur-query-when-buffer-read-only
+             (buffer-file-name)
+             ;;(file-writable-p (buffer-file-name))
+             (y-or-n-p (format "Make buffer %s writable?"
+                               (current-buffer)))
+             (or (toggle-read-only -1) t)
+             (not buffer-read-only))
+        (moccur-edit-change-file)
+      (display-warning             ; (Not defined in old Emacses! *)
+       'moccur-edit
+       (format "Buffer read only: %s" (current-buffer)))
+      nil))
+   (t
     (goto-line moccur-edit-line)
     (delete-region (line-beginning-position)
                    (line-end-position))
     (insert moccur-edit-text)
-    t))
+    t)))
 
 (defun moccur-edit-put-color-file ()
   "*Highlight the changed line of the file"
