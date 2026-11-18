@@ -1,12 +1,9 @@
 ;;; Code:
 (require 'package)
-
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives '("ELPA" . "http://tromey.com/elpa/") t)
-;;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(unless package--initialized (package-initialize))
+;; 現在、標準的で推奨される設定はこの2つです
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
 
 
 (setq gc-cons-threshold 134217728)
@@ -29,21 +26,23 @@
   )
  )
 
-
+(require 'doom-themes)
+(load-theme 'doom-tokyo-night t)
 
 (defun set-frame-size-to-left-half ()
   (interactive)
-  (let* ((display-attrs (car (display-monitor-attributes-list)))
-         (workarea (alist-get 'workarea display-attrs))
-         (width (- (nth 2 workarea) (nth 0 workarea)))
-         (height (- (nth 3 workarea) (nth 1 workarea)))
-         (frame-width (floor (* 0.495 width)))
-         (frame-height height))
-    (set-frame-position (selected-frame) 0 0)
-    (set-frame-size (selected-frame) 
-                    (floor (* 0.495 (/ width (frame-char-width))))
-                    (floor (/ height (frame-char-height)))
-                    nil)))
+  (when (display-graphic-p)
+    (let* ((display-attrs (car (display-monitor-attributes-list)))
+           (workarea (alist-get 'workarea display-attrs))
+           (width (- (nth 2 workarea) (nth 0 workarea)))
+           (height (- (nth 3 workarea) (nth 1 workarea)))
+           (frame-width (floor (* 0.495 width)))
+           (frame-height height))
+      (set-frame-position (selected-frame) 0 0)
+      (set-frame-size (selected-frame)
+                      (floor (* 0.495 (/ width (frame-char-width))))
+                      (floor (/ height (frame-char-height)))
+                      nil))))
 
 ;; 起動時にフレームサイズを設定
 (add-hook 'window-setup-hook 'set-frame-size-to-left-half)
@@ -61,10 +60,9 @@
 
 (add-hook 'emacs-startup-hook
           (function (lambda ()
-                      (auto-list 'load-path "~/.emacs.d/elpa")
-                      (auto-list 'load-path "~/.emacs.d/auto-install")
+                      (add-to-list 'load-path "~/.emacs.d/elpa")
+;;                      (auto-list 'load-path "~/.emacs.d/auto-install")
                       )))
-
 ;; old site-lisp
  (setq load-path
        (append
@@ -85,13 +83,13 @@
  ;; 英語
  (set-face-attribute 'default nil
              :family "Andale Mono"
-             :height 120)
+             :height 140)
 ;; 日本語
 (set-fontset-font
  nil 'japanese-jisx0208
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
-      '((".*MigMix 1M.*" . 1.1)))
+      '((".*MigMix 1M.*" . 1.4)))
 
 ;; frame size
 ;;(set-frame-height (next-frame) 115)
@@ -231,9 +229,9 @@
 (set-face-attribute 'whitespace-empty nil
                     :background my/bg-color)
 (setq whitespace-style '(face tabs tab-mark spaces space-mark))
-(add-hook 'markdown-mode-hook
-          '(lambda ()
-             (set (make-local-variable 'whitespace-action) nil)))
+;;(add-hook 'markdown-mode-hook
+;;          '(lambda ()
+;;             (set (make-local-variable 'whitespace-action) nil)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -242,19 +240,18 @@
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
  '(comment-style 'extra-line)
- '(custom-enabled-themes '(manoj-dark))
  '(dash-at-point-legacy-mode t)
  '(helm-delete-minibuffer-contents-from-point t)
  '(helm-ls-git-show-abs-or-relative 'relative)
  '(helm-mini-default-sources
    '(helm-source-buffers-list helm-source-files-in-current-dir helm-source-ls-git helm-source-recentf))
- '(helm-truncate-lines t t)
+ '(helm-truncate-lines t)
  '(js-doc-author (format "your name <%s>" js-doc-mail-address))
  '(js-doc-license "The MIT License")
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme markdown-mode mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc ensime dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(which-key tokyo-night-theme kotlin-mode markdown-mode olivetti exec-path-from-shell vmd-mode grip-mode magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;; Magit
@@ -426,11 +423,11 @@
 (global-set-key (kbd "<f5>") 'ctags-create-or-update-tags-table)
 
 ;; auto-install
-(load "~/.emacs.d/auto-install")
-(require 'auto-install)
-(setq auto-install-directory "~/.emacs.d/auto-install/")
-(auto-install-update-emacswiki-package-name t)
-(auto-install-compatibility-setup)
+;;(load "~/.emacs.d/auto-install")
+;;(require 'auto-install)
+;;(setq auto-install-directory "~/.emacs.d/auto-install/")
+;;(auto-install-update-emacswiki-package-name t)
+;;(auto-install-compatibility-setup)
 
 (setq ac-js2-evaluate-calls t)
 
@@ -585,7 +582,7 @@
 ;;(global-git-gutter-mode t)
 
 ;;markdown mode
-(add-to-list 'auto-mode-alist'("\\.md\\'" . markdown-mode))
+;;(add-to-list 'auto-mode-alist'("\\.md\\'" . markdown-mode))
 
 ;;php-mode
 (require 'php-mode)
@@ -643,8 +640,110 @@
 (add-to-list 'load-path "~/.emacs.d/git-complete") ;; お好きなように
 (setq git-complete-enable-autopair t)
 
+
+;; markdown-mode の設定（最終修正版）
+;; (use-package markdown-mode
+;;   :ensure t
+;;   :commands (markdown-mode gfm-mode)
+;;   :mode (("\\.md\\'" . gfm-mode)
+;;          ("\\.markdown\\'" . gfm-mode))
+;;   :config
+;;   ;; パッケージが読み込まれた後に、フックを設定する
+;;   (add-hook 'markdown-mode-hook
+;;             (lambda ()
+;;               (markdown-hide-markup)
+;;               (variable-pitch-mode 1)
+;;               (olivetti-mode 1)))
+  
+;;   ;; その他の設定
+;;   (setq markdown-header-scaling t))
+
+;; ;; olivetti-mode の設定（もし別で設定していない場合）
+;; (use-package olivetti
+;;   :ensure t)
+
 ;; markdown mode
-(require 'markdown-mode)
+;;(require 'markdown-mode)
+;;(add-hook 'markdown-mode-hook 'markdown-hide-markup)
+
+;; --- Markdown Mode Beautification ---
+
+;; 可変幅フォントのために必要
+(require 'cl-lib)
+
+;; カラーテーマを読み込んだ「後」にフォント設定を行う
+;; (もしテーマを設定している場合は、そのuse-packageブロックの中に入れるのが望ましい)
+(add-hook 'after-init-hook
+          (lambda ()
+            (set-face-attribute 'variable-pitch nil
+                                :font "Hiragino Kaku Gothic ProN-15" :height 1.1)
+            (set-face-attribute 'fixed-pitch nil
+                                :font "Menlo-14")
+            (set-face-attribute 'markdown-code-face nil
+                                :inherit 'fixed-pitch)
+            (dolist (face '((markdown-header-face-1 . 1.4)
+                            (markdown-header-face-2 . 1.3)
+                            (markdown-header-face-3 . 1.2)
+                            (markdown-header-face-4 . 1.1)
+                            (markdown-header-face-5 . 1.0)
+                            (markdown-header-face-6 . 1.0)))
+              (set-face-attribute (car face) nil :weight 'bold :height (cdr face) :inherit 'variable-pitch))))
+
+;; olivetti-mode の設定
+(use-package olivetti
+  :ensure t)
+
+;; markdown-mode の設定
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . gfm-mode))
+  :hook ((markdown-mode . (lambda ()
+                            ;; 公式ドキュメントで確認された正しいコマンド
+                            (markdown-toggle-markup-hiding)
+                            ;; 可変幅フォントを有効にする
+                            (variable-pitch-mode 1)
+                            ;; 中央寄せを有効にする
+                            (olivetti-mode 1))))
+  :config
+  ;; ヘッダーの大きさをスケールさせる
+  (setq markdown-header-scaling t))
+
+;; 可変幅フォントのために必要
+;; (require 'cl-lib)
+
+;; (use-package markdown-mode
+;;   :ensure t
+;;   :commands (markdown-mode gfm-mode)
+;;   :mode (("\\.md\\'" . gfm-mode)
+;;          ("\\.markdown\\'" . gfm-mode))
+;;   :hook ((markdown-mode . (lambda ()
+;;                             ;; 方法1: 記号を隠す
+;;                             (markdown-hide-markup)
+;;                             ;; 方法2: 可変幅フォントを有効に
+;;                             (variable-pitch-mode 1)
+;;                             ;; 方法3: 中央寄せ
+;;                             (olivetti-mode 1))))
+;;   :config
+;;   ;; ヘッダーの大きさを変える
+;;   (setq markdown-header-scaling t)
+;;   ;; 各フォントの設定
+;;   (set-face-attribute 'variable-pitch nil
+;;                       :font "Hiragino Kaku Gothic ProN-15" :height 1.1)
+;;   (set-face-attribute 'fixed-pitch nil
+;;                       :font "Menlo-14")
+;;   (set-face-attribute 'markdown-code-face nil
+;;                       :inherit 'fixed-pitch)
+;;   ;; ヘッダーのフォントを少し大きくする
+;;   (dolist (face '((markdown-header-face-1 . 1.4)
+;;                   (markdown-header-face-2 . 1.3)
+;;                   (markdown-header-face-3 . 1.2)
+;;                   (markdown-header-face-4 . 1.1)
+;;                   (markdown-header-face-5 . 1.0)
+;;                   (markdown-header-face-6 . 1.0)))
+;;     (set-face-attribute (car face) nil :weight 'bold :height (cdr face) :inherit 'variable-pitch)))
+
 
 ;; angular js ng2-mode
 ;;(require 'ng2-mode)
@@ -812,6 +911,9 @@
 ;;C-c a: 完了したタスク（DONE）をアーカイブ
 ;;C-c A: 古いTODO TODAYタスクをアーカイブ
 
+;; 自動再読み込み
+(global-auto-revert-mode 1)
+
 ;; org
 (require 'org)
 (require 'ob-C)
@@ -819,7 +921,7 @@
 (setq org-directory (expand-file-name "~/Documents/org/"))
 (setq org-agenda-files (append
                        (list (concat org-directory "todo.org"))
-                       (directory-files org-directory t "todo_.*\\.org$")))
+                       (directory-files org-directory t "^todo_.*\\.org$")))
 (setq org-src-fontify-natively t)
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (or (string= lang "ditaa")
@@ -851,6 +953,43 @@
 
 ;; DONEステータス時の見出しの色を変えない
 (setq org-fontify-done-headline nil)
+
+;; 日次ダッシュボード(Dashboard/*.org)の表示設定
+;; todo.org など他のorgファイルには影響させず、パスで絞る
+(defun my/org-dashboard-setup ()
+  (when (and buffer-file-name
+             (string-match-p "/Dashboard/" buffer-file-name))
+    (setq-local org-hide-emphasis-markers t)
+    (org-restart-font-lock)
+    (org-indent-mode 1)))
+(add-hook 'org-mode-hook #'my/org-dashboard-setup)
+
+;; 覚えなくて済む仕組み
+;; 見出しの先頭で ? を押すと一文字コマンドの一覧が出る
+;; org-indent で * が隠れても効くよう、* と空白の後ろ(見出し文字の頭)まで有効にする
+(setq org-use-speed-commands
+      (lambda ()
+        (and (org-at-heading-p)
+             (<= (point)
+                 (save-excursion
+                   (beginning-of-line)
+                   (skip-chars-forward "*")
+                   (skip-chars-forward " \t")
+                   (point))))))
+;; ? は英語の組み込みヘルプではなく、日本語の早見表を開く
+(add-to-list 'org-speed-commands '("?" . my/org-cheatsheet))
+
+;; which-key: キーを途中まで押して止まると続きの候補を出す(未導入なら何もしない)
+(when (require 'which-key nil t)
+  (setq which-key-idle-delay 0.5)
+  (which-key-mode 1))
+
+;; 早見表を C-c h で開く(C-h は delete-backward-char に割り当て済みのため使えない)
+(defvar my/org-cheatsheet-file (expand-file-name "~/.emacs.d/org-cheatsheet.org"))
+(defun my/org-cheatsheet ()
+  (interactive)
+  (view-file my/org-cheatsheet-file))
+(global-set-key (kbd "C-c h") 'my/org-cheatsheet)
 
 ;; アーカイブファイル名を生成する関数
 (defun get-archive-filename (date)
@@ -908,7 +1047,58 @@
           (org-agenda-files
            (directory-files org-directory t "archive_.*\\.org$"))))))
 
+
+;; ;; markdown-modeでgripを呼び出すための自作関数
+;; (defun my-markdown-preview-grip ()
+;;   "現在のMarkdownバッファをgripでプレビューする.
+;; プレビューが既に実行中の場合は停止する."
+;;   (interactive)
+;;   (if (and (boundp 'my-grip-process)
+;;            (process-live-p my-grip-process))
+;;       ;; 実行中のプロセスがあれば停止する
+;;       (progn
+;;         (interrupt-process my-grip-process)
+;;         (kill-process my-grip-process)
+;;         (message "Grip preview stopped."))
+;;     ;; 実行中のプロセスがなければ開始する
+;;     (progn
+;;       (setq my-grip-process
+;;             (async-shell-command
+;;              (format "grip %s" (shell-quote-argument buffer-file-name))))
+;;       (message "Starting Grip preview..."))))
+
+;; ;; markdown-modeが起動したときに、C-c C-v キーに関数を割り当てる
+;; (add-hook 'markdown-mode-hook
+;;           (lambda ()
+;;             (local-set-key (kbd "C-c C-v") #'my-markdown-preview-grip)))
+
+;; exec-path-from-shell が内部で使う cl-lib を明示的に読み込む
+;;(require 'cl-lib)
+
+;; その後に exec-path-from-shell の設定を記述
+;;(use-package exec-path-from-shell
+;;  :ensure t
+;;  :if window-system
+;;  :config
+;;  (exec-path-from-shell-initialize))
+
 ;; キーバインドの設定（最後にまとめて設定）
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c A") 'archive-done-tasks)
 (global-set-key (kbd "C-c s") 'org-agenda-search)
+
+;; --- markdown-mode デバッグ用設定：ここから ---
+
+;; Emacs起動時に強制的にmarkdown-modeを読み込む
+(message "デバッグ: markdown-modeを強制的に読み込みます...")
+(require 'markdown-mode)
+(message "デバッグ: markdown-mode読み込み完了。'markdown-hide-markup' は存在するか？ -> %s" (fboundp 'markdown-hide-markup))
+
+
+;; --- 最終切り分けテスト：ここから ---
+(use-package markdown-mode
+  :ensure t
+  :hook (markdown-mode . markdown-hide-markup-mode))
+;; --- 最終切り分けテスト：ここまで ---
+
+
