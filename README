@@ -2,6 +2,8 @@ my .emacs.d
 
 新しい環境での準備
 - elpa/ と eln-cache/ はコミットしない（.gitignore 済み）
-- クローン後に Emacs を起動し、M-x package-install-selected-packages を実行する
+- クローン後に Emacs を起動し、M-x package-refresh-contents でパッケージ一覧を更新する
+- 続けて M-x package-install-selected-packages を実行する
+- 一覧が古いと MELPA の旧版が削除済みで、インストールが失敗する。失敗したら package-refresh-contents をやり直す
 - init.el の package-selected-packages にあるパッケージが elpa/ に入る
 - 実行後に Emacs を再起動する
