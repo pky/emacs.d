@@ -193,6 +193,9 @@
 
 (defun moccur-edit-get-info ()
   (setq moccur-edit-buf nil)
+  ;; ナローイングで見出しや本文が隠れていても、バッファ全体から読む
+  (save-restriction
+  (widen)
   (save-excursion
     (beginning-of-line)
     (when (re-search-backward "^[-+ ]*Buffer:" nil t)
@@ -224,7 +227,7 @@
                                    (match-end 1))))
           (setq moccur-edit-text (buffer-substring-no-properties
                                   (match-beginning 2)
-                                  (match-end 2))))))
+                                  (match-end 2)))))))
   )
 
 (defun moccur-edit-change-file ()
