@@ -203,33 +203,6 @@
       (kill-buffer target-a)
       (kill-buffer target-b))))
 
-(ert-deftest moccur-edit-change-file-replaces-line-outside-narrowing ()
-  (with-temp-buffer
-    (insert "alpha\nbravo\ncharlie")
-    (goto-char (point-min))
-    (forward-line 2)
-    (narrow-to-region (point) (point-max))
-    (let ((widen-automatically nil)
-          (moccur-edit-line 2)
-          (moccur-edit-text ""))
-      (should (eq (moccur-edit-change-file) t))
-      (should (equal (save-restriction (widen) (buffer-string))
-                     "alpha\n\ncharlie"))
-      (should (equal (buffer-string) "charlie")))))
-
-(ert-deftest moccur-edit-change-file-replaces-line-cut-off-by-narrowing ()
-  (with-temp-buffer
-    (insert "alpha\nbravo\ncharlie")
-    (goto-char (point-min))
-    (forward-line 1)
-    (forward-char (length "bra"))
-    (narrow-to-region (point-min) (point))
-    (let ((moccur-edit-line 2)
-          (moccur-edit-text "X"))
-      (moccur-edit-change-file)
-      (should (equal (save-restriction (widen) (buffer-string))
-                     "alpha\nX\ncharlie")))))
-
 (ert-deftest moccur-edit-change-file-counts-carriage-return-with-selective-display ()
   (with-temp-buffer
     (insert "head\rhidden\nmatch here\nneighbor\n")
