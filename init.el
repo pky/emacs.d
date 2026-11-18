@@ -1,3 +1,4 @@
+;;; init.el  -*- lexical-binding: nil -*-
 ;;; Code:
 (require 'package)
 ;; 現在、標準的で推奨される設定はこの2つです
@@ -55,14 +56,6 @@
 (setq initial-frame-alist nil)
 
 
-;; フルスクリーンモードを無効化（必要な場合）
-;;(setq initial-frame-alist '((fullscreen . nil)))
-
-(add-hook 'emacs-startup-hook
-          (function (lambda ()
-                      (add-to-list 'load-path "~/.emacs.d/elpa")
-;;                      (auto-list 'load-path "~/.emacs.d/auto-install")
-                      )))
 ;; old site-lisp
  (setq load-path
        (append
@@ -90,38 +83,13 @@
   (font-spec :family "MigMix 1M"))
 (setq face-font-rescale-alist
       '((".*MigMix 1M.*" . 1.4)))
-
-;; frame size
-;;(set-frame-height (next-frame) 115)
-;;(set-frame-width (next-frame) 138)
 ))
-
-
-
-;; (setq default-frame-alist
-;;       (append '((width                . 140)  ; フレーム幅
-;;                 (height               . 80 ) ; フレーム高
-;;                 (left                 . 0 ) ; 配置左位置
-;;                 (top                  . 0 ) ; 配置上位置
-;;                 (line-spacing         . 0  ) ; 文字間隔
-;;                 (left-fringe          . 12 ) ; 左フリンジ幅
-;;                 (right-fringe         . 12 ) ; 右フリンジ幅
-;;                 (menu-bar-lines       . 1  ) ; メニューバー
-;;                 (cursor-type          . box) ; カーソル種別
-;;                 (alpha                . 90) ; 透明度
-;;                 )
-;;               default-frame-alist))
-;; (setq initial-frame-alist default-frame-alist)
 
 ;;GUIで起動するときはサーバーも起動するようにする．
 (if window-system (progn
     (require 'server)
     (unless (server-running-p)
-         (server-start) )))  
-
-;;frame,bufferの保存
-;;(desktop-save-mode t)
-(setq browse-url-mosaic-program nil)
+         (server-start) )))
 
 ;;close-all-buffers
 (defun close-all-buffers ()
@@ -132,19 +100,17 @@
 (setq process-coding-system-alist '(("svn" . utf-8)))
 (setq svn-status-svn-process-coding-system 'utf-8)
 
-(setq exec-path (cons "/usr/local/bin" exec-path))
-(setenv "PATH"
-   (concat '"/usr/local/bin:" (getenv "PATH")))
+;; Apple Silicon の Homebrew は /opt/homebrew。GUI 起動では PATH に入らないため明示する。
+(dolist (dir '("/usr/local/bin" "/opt/homebrew/bin"))
+  (add-to-list 'exec-path dir)
+  (setenv "PATH" (concat dir ":" (getenv "PATH"))))
 
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\e[3~" 'delete-char)
-(global-set-key "\C-xl" 'indent-region)
 (global-set-key "\C-xa" 'recentf-open-files)
-(global-set-key "\C-o" 'dabbrev-expand)
 (global-set-key (kbd "C-j") 'newline-and-indent)
 (setq mac-option-modifier 'meta)
 
-;;(require 'carbon-font)
 ;; shell zsh
 (setq shell-file-name "/usr/local/bin/zsh")
 
@@ -155,13 +121,9 @@
 (setq truncate-lines nil)
 (setq truncate-partial-width-windows nil)
 
-;; kill-ring summary
-(autoload 'kill-summary "kill-summary" nil t)(global-set-key "\M-y" 'kill-summary)
-
 ;; uc dc
 (setq read-file-name-completion-ignore-case t)
 
-;;(setq fill-column 80)
 (setq-default auto-fill-mode t)
 (show-paren-mode 1)
 (auto-image-file-mode t)
@@ -183,22 +145,6 @@
 
 ;;tab,whitespaceの可視化
 (require 'whitespace)
-(setq whitespace-style '(face
-                         tabs
-                         tab-mark
-                         spaces
-                         space-mark
-                         empty
-                         trailing
-                         indentaion
-                         indentation::space
-                         indentation::tab
-                         newline
-                         newline-mark
-                         lines
-                         lines-tail
-                         ))
-;;(setq whitespace-space-regexp "\\(\x3000+\\)")
 (setq whitespace-display-mappings
       '((space-mark ?\x3000 [?\□])
         (space-mark   ?\    [?\xB7]     [183])
@@ -206,7 +152,6 @@
         (tab-mark   ?\t   [?\xBB ?\t])
         ))
 (global-whitespace-mode 1)
-;;(setq whitespace-action nil)
 (setq whitespace-action '(auto-cleanup))
 (set-face-bold-p 'whitespace-space t)
 (defvar my/bg-color "#232323")
@@ -229,9 +174,6 @@
 (set-face-attribute 'whitespace-empty nil
                     :background my/bg-color)
 (setq whitespace-style '(face tabs tab-mark spaces space-mark))
-;;(add-hook 'markdown-mode-hook
-;;          '(lambda ()
-;;             (set (make-local-variable 'whitespace-action) nil)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -251,7 +193,7 @@
  '(js-doc-mail-address "your email address")
  '(js-doc-url "your url")
  '(package-selected-packages
-   '(which-key tokyo-night-theme kotlin-mode markdown-mode olivetti exec-path-from-shell vmd-mode grip-mode magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode psvn php-mode php-completion packed osx-browse org noctilux-theme mark-multiple lui let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe+ git-gutter fuzzy expand-region epc dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe autopair auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
+   '(doom-themes which-key tokyo-night kotlin-mode markdown-mode js2-mode projectile migemo wgrep-ag yaml-mode helm-ls-git web-mode typescript-mode olivetti exec-path-from-shell vmd-mode grip-mode magit package-build shut-up epl git commander f dash s use-package add-node-modules-path prettier-js tide find-file-in-project counsel adjust-parens elscreen package-utils 0xc wgrep-helm 0blayout wgrep-pt w3m volatile-highlights smartrep shorten scss-mode php-mode packed osx-browse org noctilux-theme multiple-cursors let-alist lcs js2-refactor js-doc js-comint imenus ido-vertical-mode ido-occasional helm-projectile helm-migemo helm-ls-svn helm-ls-hg helm-git-grep helm-git-files helm-git helm-gist helm-descbinds helm-dash helm-ag haml-mode git-gutter-fringe git-gutter fuzzy expand-region epc dash-at-point darcula-theme ctags company-web color-moccur coffee-mode citrus-mode circe auto-save-buffers-enhanced auto-install auto-complete-clang ag ace-jump-mode ace-jump-helm-line ace-isearch ac-math ac-js2 ac-helm))
  '(standard-indent 2))
 
 ;; Magit
@@ -268,7 +210,6 @@
     (setq moccur-user-migemo t)))
 
 ;; moccur-edit
-(load "~/.emacs.d/elpa/moccur-edit/moccur-edit")
 (require 'moccur-edit nil t)
 ;; moccur-edit-finisi-edit and save
 (defadvice moccur-edit-change-file
@@ -293,7 +234,7 @@
 (setq migemo-options '("-q" "--emacs"))
 
 ;; Set your installed path
-(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+(setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
 
 (setq migemo-user-dictionary nil)
 (setq migemo-regex-dictionary nil)
@@ -315,7 +256,6 @@
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 
-;;(add-to-list 'default-frame-alist '(font . "fontset-default"))
 ;;tramp
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
@@ -344,17 +284,11 @@
               (define-key js2-mode-map (kbd "<return>") 'newline-and-indent)
               ))
 (require 'js2-refactor)
-(require 'inline-string-rectangle)
-(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
-(require 'mark-more-like-this)
-(global-set-key (kbd "C-<") 'mark-previous-like-this)
-(global-set-key (kbd "C->") 'mark-next-like-this)
-(global-set-key (kbd "C-M-m") 'mark-more-like-this)
-(global-set-key (kbd "C-*") 'mark-all-like-this)
-(add-hook 'sgml-mode-hook
-          (lambda ()
-            (require 'rename-sgml-tag)
-            (define-key sgml-mode-map (kbd "C-c C-r") 'rename-sgml-tag)))
+(require 'multiple-cursors)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-M-m") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-*") 'mc/mark-all-like-this)
 (add-hook 'js2-mode-hook 'ac-js2-mode)
 
 ;; js tide
@@ -418,36 +352,24 @@
 ;; ctags
 (require 'ctags nil t)
 (setq tags-revert-without-query t)
-;;(setq ctags-command "/usr/local/bin/ctags -e -R ")
 (setq ctags-command "/usr/bin/ctags -R --fields=\"+afikKlmnsSzt\" ")
 (global-set-key (kbd "<f5>") 'ctags-create-or-update-tags-table)
 
-;; auto-install
-;;(load "~/.emacs.d/auto-install")
-;;(require 'auto-install)
-;;(setq auto-install-directory "~/.emacs.d/auto-install/")
-;;(auto-install-update-emacswiki-package-name t)
-;;(auto-install-compatibility-setup)
-
 (setq ac-js2-evaluate-calls t)
-
-(autoload 'riece "riece" "Start Riece" t)
 
 ;; yaml
 (require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode)
-(setq tab-width 2))
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(setq tab-width 2)
 
 ;; autopair
-(require 'autopair)
-(autopair-global-mode)
+(electric-pair-mode 1) ; 組み込み。autopair は MELPA から消えたため置き換え
 
 ;;volatile-highlights
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
 ;; helm
-;;(require 'helm-config)
 (require 'helm-core)
 (require 'helm-descbinds)
 (require 'helm-ag)
@@ -457,12 +379,8 @@
 (helm-mode 1)
 (helm-migemo-mode 1)
 
-(global-set-key (kbd "C-x C-d") ''helm-ls-git-ls)
+(global-set-key (kbd "C-x C-d") 'helm-ls-git-ls)
 
-
-  (with-eval-after-load "helm-regexp.el"
-    (setq helm-source-occur (helm-make-source "Occur" 'helm-source-multi-occur))
-    (setq helm-source-occur (helm-make-source "Moccur" 'helm-source-multi-occur)))
 
 
 ;; Change the keybinds to whatever you like :)
@@ -515,18 +433,6 @@
 ;; ;;; ace-isearch
  (global-ace-isearch-mode 1)
 
-;; ;;; [2015-03-23 Mon]C-u C-s / C-u C-u C-s
- (defun isearch-forward-or-helm-swoop (use-helm-swoop)
-   (interactive "p")
-   (let (current-prefix-arg
-         (helm-swoop-pre-input-function 'ignore))
-     (call-interactively
-      (case use-helm-swoop
-        (1 'isearch-forward)
-        (4 'helm-swoop)
-        (16 'helm-swoop-nomigemo)))))
- (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop)
-
 ;; ;;; ido化: imenus/with-ido imenus-mode-buffers/with-idoを定義
  (with-ido-completion imenus)
 ;; ;; C-M-s C-M-sで現在のシンボルをhelm-multi-swoopできるよ！
@@ -535,12 +441,9 @@
  (global-set-key (kbd "C-;") 'helm-mini)
 (global-set-key (kbd "C-c b") 'helm-descbinds)
 (global-set-key (kbd "C-c o") 'helm-occur)
- (global-set-key (kbd "C-c g") 'helm-ag)
  (define-key global-map (kbd "M-y") 'helm-show-kill-ring)
  (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
- (global-set-key (kbd "C-c s") 'helm-git-files)
  (global-set-key (kbd "C-c p") 'helm-swoop)
- (global-set-key (kbd "C-c d") 'dash-at-point)
  (global-set-key (kbd "C-c C-d") 'helm-browse-project)
 
  (define-key helm-map (kbd "C-h") 'delete-backward-char)
@@ -549,40 +452,24 @@
 ;; ;;; 現在のシンボルをデフォルトのクエリにする
  (setq helm-ag-insert-at-point 'symbol)
 
-;; ;;; C-M-gはちょうどあいてる
- (global-set-key (kbd "C-M-g") 'helm-ag)
  (global-set-key (kbd "C-M-g") 'helm-projectile-ag)
  (global-set-key (kbd "C-M-k") 'backward-kill-sexp) ;推奨
 
-(global-git-gutter+-mode)
-(require 'git-gutter-fringe+)
-(git-gutter-fr+-minimal)
+;; git-gutter (git-gutter+ は MELPA から消えたため置き換え)
+(require 'git-gutter)
+(require 'git-gutter-fringe nil t) ; 未導入ならマージン表示になる
+(global-git-gutter-mode 1)
 
-(global-set-key (kbd "C-x g") 'git-gutter+-mode) ; Turn on/off in the current buffer
-(global-set-key (kbd "C-x G") 'global-git-gutter+-mode) ; Turn on/off globally
+(global-set-key (kbd "C-x g") 'git-gutter-mode) ; Turn on/off in the current buffer
+(global-set-key (kbd "C-x G") 'global-git-gutter-mode) ; Turn on/off globally
 
-(eval-after-load 'git-gutter+
-  '(progn
-     ;;; Jump between hunks
-     (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
-
-     ;;; Act on hunks
-     (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x r") 'git-gutter+-revert-hunks)
-     ;; Stage hunk at point.
-     ;; If region is active, stage all hunk lines within the region.
-     (define-key git-gutter+-mode-map (kbd "C-x t") 'git-gutter+-stage-hunks)
-     (define-key git-gutter+-mode-map (kbd "C-x c") 'git-gutter+-commit)
-     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit)
-     (define-key git-gutter+-mode-map (kbd "C-x C-y") 'git-gutter+-stage-and-commit-whole-buffer)
-     (define-key git-gutter+-mode-map (kbd "C-x U") 'git-gutter+-unstage-whole-buffer)))
-
-;;(require 'git-gutter)
-;;(global-git-gutter-mode t)
-
-;;markdown mode
-;;(add-to-list 'auto-mode-alist'("\\.md\\'" . markdown-mode))
+;; hunk間の移動と操作。コミット系は magit に任せる
+;; git-gutter にはキーマップがないため、標準の C-x n/p/r/t を潰さないよう C-x v 配下に置く
+(global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x v h") 'git-gutter:popup-hunk)
+(global-set-key (kbd "C-x v R") 'git-gutter:revert-hunk)
+(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
 
 ;;php-mode
 (require 'php-mode)
@@ -591,16 +478,12 @@
 ;; php-mode-hook
 (add-hook 'php-mode-hook
           (lambda ()
-            (require 'php-completion)
-            (php-completion-mode t)
             (setq tab-width 2)
             (setq indent-tabs-mode nil)
             (setq c-basic-offset 2)
-            (define-key php-mode-map (kbd "C-o") 'phpcmp-complete) ;php-completionの補完実行キーバインドの設定
             (make-local-variable 'ac-sources)
             (setq ac-sources '(
                                ac-source-words-in-same-mode-buffers
-                               ac-source-php-completion
                                ac-source-filename
                                ))))
 
@@ -620,7 +503,7 @@
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
 
-(defun web-mode-hook ()
+(defun my/web-mode-setup ()
   ;;(electric-indent-local-mode -1)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-code-indent-offset 2)
@@ -629,42 +512,16 @@
   (setq web-mode-indent-style 2)
   (setq web-mode-style-padding 2)
   (setq web-mode-script-padding 2)
-  (setq web-mode-block-padding 2)
-  (add-hook 'web-mode-hook 'web-mode-hook))
+  (setq web-mode-block-padding 2))
+(add-hook 'web-mode-hook #'my/web-mode-setup)
 
 ;; git-complete
 
 (require 'git-complete)
 (global-unset-key (kbd "C-c C-g")) ;; 一応unbindしておきましょう
 (global-set-key (kbd "C-c C-g") 'git-complete)
-(add-to-list 'load-path "~/.emacs.d/git-complete") ;; お好きなように
 (setq git-complete-enable-autopair t)
 
-
-;; markdown-mode の設定（最終修正版）
-;; (use-package markdown-mode
-;;   :ensure t
-;;   :commands (markdown-mode gfm-mode)
-;;   :mode (("\\.md\\'" . gfm-mode)
-;;          ("\\.markdown\\'" . gfm-mode))
-;;   :config
-;;   ;; パッケージが読み込まれた後に、フックを設定する
-;;   (add-hook 'markdown-mode-hook
-;;             (lambda ()
-;;               (markdown-hide-markup)
-;;               (variable-pitch-mode 1)
-;;               (olivetti-mode 1)))
-  
-;;   ;; その他の設定
-;;   (setq markdown-header-scaling t))
-
-;; ;; olivetti-mode の設定（もし別で設定していない場合）
-;; (use-package olivetti
-;;   :ensure t)
-
-;; markdown mode
-;;(require 'markdown-mode)
-;;(add-hook 'markdown-mode-hook 'markdown-hide-markup)
 
 ;; --- Markdown Mode Beautification ---
 
@@ -672,7 +529,6 @@
 (require 'cl-lib)
 
 ;; カラーテーマを読み込んだ「後」にフォント設定を行う
-;; (もしテーマを設定している場合は、そのuse-packageブロックの中に入れるのが望ましい)
 (add-hook 'after-init-hook
           (lambda ()
             (set-face-attribute 'variable-pitch nil
@@ -710,44 +566,8 @@
   ;; ヘッダーの大きさをスケールさせる
   (setq markdown-header-scaling t))
 
-;; 可変幅フォントのために必要
-;; (require 'cl-lib)
-
-;; (use-package markdown-mode
-;;   :ensure t
-;;   :commands (markdown-mode gfm-mode)
-;;   :mode (("\\.md\\'" . gfm-mode)
-;;          ("\\.markdown\\'" . gfm-mode))
-;;   :hook ((markdown-mode . (lambda ()
-;;                             ;; 方法1: 記号を隠す
-;;                             (markdown-hide-markup)
-;;                             ;; 方法2: 可変幅フォントを有効に
-;;                             (variable-pitch-mode 1)
-;;                             ;; 方法3: 中央寄せ
-;;                             (olivetti-mode 1))))
-;;   :config
-;;   ;; ヘッダーの大きさを変える
-;;   (setq markdown-header-scaling t)
-;;   ;; 各フォントの設定
-;;   (set-face-attribute 'variable-pitch nil
-;;                       :font "Hiragino Kaku Gothic ProN-15" :height 1.1)
-;;   (set-face-attribute 'fixed-pitch nil
-;;                       :font "Menlo-14")
-;;   (set-face-attribute 'markdown-code-face nil
-;;                       :inherit 'fixed-pitch)
-;;   ;; ヘッダーのフォントを少し大きくする
-;;   (dolist (face '((markdown-header-face-1 . 1.4)
-;;                   (markdown-header-face-2 . 1.3)
-;;                   (markdown-header-face-3 . 1.2)
-;;                   (markdown-header-face-4 . 1.1)
-;;                   (markdown-header-face-5 . 1.0)
-;;                   (markdown-header-face-6 . 1.0)))
-;;     (set-face-attribute (car face) nil :weight 'bold :height (cdr face) :inherit 'variable-pitch)))
-
-
-;; angular js ng2-mode
-;;(require 'ng2-mode)
-;;(with-eval-after-load 'typescript-mode (add-hook 'typescript-mode-hook #'lsp))
+;; after-init-hook の markdown-code-face 設定は、フェイスが定義済みであることが前提
+(require 'markdown-mode)
 
 ;; counsel
 (ivy-mode 1) ;; デフォルトの入力補完がivyになる
@@ -763,7 +583,6 @@
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 (global-set-key (kbd "C-c k") 'counsel-ag)
 (global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
@@ -807,10 +626,6 @@
 (flycheck-add-mode 'javascript-eslint 'js2-mode)
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-mode 'javascript-eslint 'typescript-mode)
-;; (with-eval-after-load 'tide
-;;   (flycheck-add-mode 'typescript-tslint 'ng2-ts-mode)
-;;   (flycheck-add-mode 'typescript-tide 'ng2-ts-mode)
-;; )
 
 
 (eval-after-load 'js-mode
@@ -842,9 +657,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(c-annotation-face ((t (:inherit font-lock-constant-face))))
- '(egg-header ((t (:weight normal :height 1.6))))
- '(egg-help-header-1 ((t (:inherit egg-text-base :height 1.2))))
- '(egg-help-header-2 ((((class color) (background dark)) (:inherit egg-text-1 :foreground "LightSteelBlue"))))
  '(erc-keyword-face ((t (:foreground "RoyalBlue" :weight normal))) t)
  '(erc-notice-face ((t (:foreground "SlateBlue" :weight normal))) t)
  '(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :foreground "lavender"))))
@@ -858,8 +670,6 @@
  '(js2-external-variable ((t (:foreground "PaleTurquoise"))))
  '(magit-blame-heading ((t (:background "SteelBlue1" :foreground "gray90"))))
  '(magit-diff-hunk-heading-highlight ((t (:background "gray80" :foreground "OrangeRed4"))))
- '(mumamo-background-chunk-major ((((class color) (min-colors 8)) (:background "*"))) t)
- '(mumamo-background-chunk-submode ((((class color) (min-colors 8)) (:background "*"))) t)
  '(web-mode-html-attr-name-face ((t (:foreground "LightSkyBlue"))))
  '(web-mode-html-tag-face ((t (:foreground "MediumAquamarine")))))
 
@@ -868,15 +678,9 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;; cask
-;;(require 'cask "/usr/local/opt/cask/cask.el")
-;;(cask-initialize)
-
 ;; typescript
 (require 'typescript-mode)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-;;(add-to-list 'auto-mode-alist '("\\.ts\\'" . ng2-ts-mode))
-
 
 (defun setup-tide-mode ()
   (interactive)
@@ -891,8 +695,6 @@
   (company-mode +1))
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
-;; formats the buffer before saving
-;;(add-hook 'before-save-hook 'tide-format-before-save)
 
 ;; jsx
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
@@ -900,16 +702,6 @@
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-
-(defun vue-mode/init-vue-mode ()
-  "Initialize my package"
-  (use-package vue-mode))
-
-;;C-c t: 今日の日付のtodoファイルを作成・開く
-;;C-c i: 全体のインデックスファイルを作成・更新
-;;C-c o: 指定した日付のtodoファイルを開く
-;;C-c a: 完了したタスク（DONE）をアーカイブ
-;;C-c A: 古いTODO TODAYタスクをアーカイブ
 
 ;; 自動再読み込み
 (global-auto-revert-mode 1)
@@ -919,9 +711,11 @@
 (require 'ob-C)
 (require 'ob-ruby)
 (setq org-directory (expand-file-name "~/Documents/org/"))
-(setq org-agenda-files (append
-                       (list (concat org-directory "todo.org"))
-                       (directory-files org-directory t "^todo_.*\\.org$")))
+;; org-directory がない環境でも起動できるようにする
+(setq org-agenda-files (when (file-directory-p org-directory)
+                         (append
+                          (list (concat org-directory "todo.org"))
+                          (directory-files org-directory t "^todo_.*\\.org$"))))
 (setq org-src-fontify-natively t)
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (or (string= lang "ditaa")
@@ -930,7 +724,6 @@
            (string= lang "C")
            (string= lang "cpp")
            )))
-(setq todo-hide-conditions '("status:done"))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 ;; org-todo設定
@@ -1048,57 +841,7 @@
            (directory-files org-directory t "archive_.*\\.org$"))))))
 
 
-;; ;; markdown-modeでgripを呼び出すための自作関数
-;; (defun my-markdown-preview-grip ()
-;;   "現在のMarkdownバッファをgripでプレビューする.
-;; プレビューが既に実行中の場合は停止する."
-;;   (interactive)
-;;   (if (and (boundp 'my-grip-process)
-;;            (process-live-p my-grip-process))
-;;       ;; 実行中のプロセスがあれば停止する
-;;       (progn
-;;         (interrupt-process my-grip-process)
-;;         (kill-process my-grip-process)
-;;         (message "Grip preview stopped."))
-;;     ;; 実行中のプロセスがなければ開始する
-;;     (progn
-;;       (setq my-grip-process
-;;             (async-shell-command
-;;              (format "grip %s" (shell-quote-argument buffer-file-name))))
-;;       (message "Starting Grip preview..."))))
-
-;; ;; markdown-modeが起動したときに、C-c C-v キーに関数を割り当てる
-;; (add-hook 'markdown-mode-hook
-;;           (lambda ()
-;;             (local-set-key (kbd "C-c C-v") #'my-markdown-preview-grip)))
-
-;; exec-path-from-shell が内部で使う cl-lib を明示的に読み込む
-;;(require 'cl-lib)
-
-;; その後に exec-path-from-shell の設定を記述
-;;(use-package exec-path-from-shell
-;;  :ensure t
-;;  :if window-system
-;;  :config
-;;  (exec-path-from-shell-initialize))
-
 ;; キーバインドの設定（最後にまとめて設定）
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c A") 'archive-done-tasks)
 (global-set-key (kbd "C-c s") 'org-agenda-search)
-
-;; --- markdown-mode デバッグ用設定：ここから ---
-
-;; Emacs起動時に強制的にmarkdown-modeを読み込む
-(message "デバッグ: markdown-modeを強制的に読み込みます...")
-(require 'markdown-mode)
-(message "デバッグ: markdown-mode読み込み完了。'markdown-hide-markup' は存在するか？ -> %s" (fboundp 'markdown-hide-markup))
-
-
-;; --- 最終切り分けテスト：ここから ---
-(use-package markdown-mode
-  :ensure t
-  :hook (markdown-mode . markdown-hide-markup-mode))
-;; --- 最終切り分けテスト：ここまで ---
-
-

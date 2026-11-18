@@ -1,5 +1,18 @@
 my .emacs.d
 
+Emacs 31.1 の導入（Apple Silicon の Mac）
+- 作業前に、今の Emacs 本体、/Applications/Emacs.app、~/.emacs.d、elpa/ をコピーしてバックアップする
+- brew tap d12frosted/emacs-plus
+- brew install d12frosted/emacs-plus/emacs-plus@31
+- emacs-mac@29 など別の Emacs が link 済みの場合、brew link が share/metainfo/emacs.metainfo.xml で衝突する。先に brew unlink emacs-mac@29 を実行する
+- brew link emacs-plus@31 のあと emacs --version で 31.1 になったことを確認する
+- 旧アプリを /Applications/Emacs-29.4.app などに改名し、/opt/homebrew/Cellar/emacs-plus@31/31.1/Emacs.app を /Applications/Emacs.app にコピーする
+- brew link が切り替えるのは端末の emacs コマンドだけ。/Applications のアプリは別に入れ替える
+- brew install cmigemo the_silver_searcher（init.el が使う）
+- /opt/homebrew/share/migemo/utf-8/migemo-dict があることを確認する
+- ~/Documents/org/ がなくても起動できる。org のメモを使うなら mkdir -p ~/Documents/org
+- 戻すときは、旧アプリの名前を戻し、brew unlink emacs-plus@31 と brew link emacs-mac@29 を実行する
+
 新しい環境での準備
 - elpa/ と eln-cache/ はコミットしない（.gitignore 済み）
 - クローン後に Emacs を起動し、M-x package-refresh-contents でパッケージ一覧を更新する
@@ -7,3 +20,11 @@ my .emacs.d
 - 一覧が古いと MELPA の旧版が削除済みで、インストールが失敗する。失敗したら package-refresh-contents をやり直す
 - init.el の package-selected-packages にあるパッケージが elpa/ に入る
 - 実行後に Emacs を再起動する
+
+MELPA から入らないパッケージ（helm-swoop, helm-ag, helm-migemo）
+- 一覧に出ない場合は GitHub から直接入れる（Emacs 29 以降の package-vc-install）
+- M-x package-vc-install RET https://github.com/emacsorphanage/helm-swoop RET
+- M-x package-vc-install RET https://github.com/emacsorphanage/helm-ag RET
+- M-x package-vc-install RET https://github.com/emacs-jp/helm-migemo RET
+- 入れる前に elpa/ をバックアップしておく（パッケージ操作の失敗で壊れることがある）
+- helm-migemo の URL は未確認。開けない場合は GitHub で名前を検索する
