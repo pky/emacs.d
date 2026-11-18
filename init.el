@@ -711,9 +711,11 @@
 (require 'ob-C)
 (require 'ob-ruby)
 (setq org-directory (expand-file-name "~/Documents/org/"))
-(setq org-agenda-files (append
-                       (list (concat org-directory "todo.org"))
-                       (directory-files org-directory t "^todo_.*\\.org$")))
+;; org-directory がない環境でも起動できるようにする
+(setq org-agenda-files (when (file-directory-p org-directory)
+                         (append
+                          (list (concat org-directory "todo.org"))
+                          (directory-files org-directory t "^todo_.*\\.org$"))))
 (setq org-src-fontify-natively t)
 (defun my-org-confirm-babel-evaluate (lang body)
   (not (or (string= lang "ditaa")
